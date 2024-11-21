@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Greppability is an underrated code metric "
+title: "Greppability is an underrated code metric"
 date: 2024-11-21 10:23:00 -0500
 link: https://morizbuesing.com/blog/greppability-code-metric/
 categories: link code
