@@ -26,12 +26,9 @@ pagination:
 
 autopages:
   enabled: true
-  categories:
-    layout: category
-    permalink: /category/:cat/
-  slugify:
-    mode: 'default'  # :cat is slugified. Modes: default, raw, pretty, ascii, latin
-    case: true
+  tags:
+    layout: tags
+    permalink: /tag/:tag/
 
 author:
   name: Liam Marcassa

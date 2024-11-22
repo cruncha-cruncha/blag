@@ -3,7 +3,7 @@ layout: post
 title: "A Bug's Life"
 date: 2024-11-22 13:45:00 -0500
 byline: How to triage from the ground up
-categories: bug code
+tags: bug code software triage
 ---
 
 Let's set the scene: we can search for a person by name (first or last) and get a list of results, paginated (infinite scroll style) fifteen at a time. The full bug report: "sometimes people are missing from results".

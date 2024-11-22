@@ -24,6 +24,11 @@ layout: base
         <div class="content">
             {{ content }}
         </div>
+        <div class="tags">
+            {%- for tag in page.tags -%}
+            <a href="{{ "tag/" | relative_url }}{{ tag | slugize }}">{{ tag }}</a>
+            {%- endfor -%}
+        </div>
         <script src="https://utteranc.es/client.js" repo="cruncha-cruncha/blag" issue-term="pathname" label="utter-"
             theme="github-light" crossorigin="anonymous" async>
             </script>

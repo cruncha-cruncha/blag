@@ -108,7 +108,7 @@ header {
       padding-right: 10px;
       margin: 8px 7px 12px 0;
       text-decoration: none;
-      border-right: 5px solid aquamarine;
+      border-right: 5px solid royalblue;
       color: $black;
 
       @media (max-width: $md) {
@@ -174,7 +174,7 @@ ul.posts-list {
   a {
     display: block;
     width: 100%;
-    border-left: 5px solid aquamarine;
+    border-left: 5px solid royalblue;
     padding-right: 20px;
     padding-left: 15px;
   }
@@ -234,10 +234,30 @@ ul.posts-list {
 
   .content {
     line-height: 1.2;
+
+    a {
+      white-space: nowrap;
+    }
+
+    a::before {
+      content: "\2197";
+      display: inline-block;
+      position: relative;
+      bottom: 2px;
+    }
   }
-  
-  a {
-    font-style: italic;
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 16px;
+    border-top: 5px solid royalblue;
+
+    a {
+      display: inline-block;
+      margin: 0 5px;
+    }
   }
 }
 
@@ -252,7 +272,7 @@ footer {
   }
 }
 
-.categories {
+.tags {
   margin-top: 10px;
   .page-title {
     margin-top: 0px;
@@ -261,7 +281,7 @@ footer {
       padding: 0 10px;
     }
   }
-  .category-option {
+  .tag-option {
     margin: 10px 20px;
     @include subtle-links();
     h3 {

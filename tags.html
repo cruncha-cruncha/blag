@@ -1,0 +1,22 @@
+---
+layout: base
+permalink: /tags/
+title: Tags
+---
+
+{% assign tags = site.tags | sort %}
+
+<div class="tags layout-wrapper">
+    <div class="layout-container">
+        <p class="page-title">Tags:</p>
+        {% for tag in tags %}
+        {% capture tag_name %}{{ tag | first }}{% endcapture %}
+        <div class="tag-option">
+            <a href="{{ site.baseurl }}/tag/{{ tag_name | slugize }}">
+                <h3>{{ tag_name }}</h3>
+                <span>({{ site.tags[tag_name] | size }})</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
