@@ -168,7 +168,7 @@ PLATFORMS
 
 DEPENDENCIES
   http_parser.rb (~> 0.6.0)
-  jekyll (~> 4.3.4)
+  jekyll (~> 4.2)
   jekyll-feed (~> 0.12)
   jekyll-paginate (~> 1.1)
   jekyll-seo-tag (~> 2.7)
