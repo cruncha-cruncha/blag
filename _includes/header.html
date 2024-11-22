@@ -1,0 +1,20 @@
+<header class="layout-wrapper">
+  <div class="layout-container">
+    <div class="header-top">
+      <a href="{{ site.baseurl }}/">
+        <h2>{{ site.title }}</h2>
+      </a>
+      <button id="nav-btn">&equiv;</button>
+    </div>
+    <menu id="nav-menu" class="hidden">
+      <a href="#">tags</a>
+      <a href="https://github.com/cruncha-cruncha">github</a>
+    </menu>
+  </div>
+</header>
+
+<script defer>
+  document.getElementById("nav-btn").addEventListener("click", function () {
+    document.getElementById("nav-menu").classList.toggle("hidden");
+  });
+</script>
