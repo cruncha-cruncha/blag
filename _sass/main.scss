@@ -1,0 +1,195 @@
+$max-width: 800px;
+$md: 768px;
+$black: #333;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  color: $black;
+  min-height: 100vh;
+  height: 100%;
+  background-color: ivory;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.body-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+.layout-wrapper {
+  width: 100%;
+}
+
+.layout-container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @media (max-width: $md) {
+    padding: 0 10px;
+  }
+}
+
+@mixin subtle-links() {
+  a {
+    text-decoration: none;
+    color: $black;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+header {
+  background-color: pink;
+  padding-top: 20px;
+  padding-bottom: 10px;
+
+  @media (max-width: $md) {
+    padding-top: 10px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    @include subtle-links();
+  }
+
+  #nav-btn {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+
+  menu {
+    margin: 0;
+    padding: 0;
+
+    a {
+      display: block;
+      text-align: right;
+      margin-top: 5px;
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+}
+
+.home {
+  > .layout-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  ul.posts-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-summary {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    @include subtle-links();
+
+    .date {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .nearr {
+      position: relative;
+      bottom: 5px;
+    }
+
+    .byline {
+      font-style: italic;
+    }
+  }
+
+  .pager {
+    display: flex;
+    justify-content: center;
+    @include subtle-links();
+
+    .invisible {
+      visibility: hidden;
+    }
+
+    > * {
+      margin: 0 5px;
+    }
+
+    .next-page,
+    .previous-page {
+      position: relative;
+      bottom: 4px;
+    }
+  }
+}
+
+.post {
+  margin-top: 10px;
+  @include subtle-links();
+
+  .nearr {
+    position: relative;
+    bottom: 5px;
+  }
+
+  .date {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .byline {
+    font-style: italic;
+  }
+}
+
+footer {
+  text-align: center;
+  padding: 10px 0;
+
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: 0.5rem;
+  }
+}

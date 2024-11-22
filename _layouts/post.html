@@ -1,0 +1,27 @@
+---
+layout: base
+---
+
+<div class="post layout-wrapper">
+    <div class="layout-container">
+        <div class="date">
+            <span>{{ page.date | date: site.date_format }}</span>
+        </div>
+        {%- if page.link -%}
+        <a href="{{ page.link }}">
+            <h1>
+                <span class="nearr">&nearr;</span>
+                {{ page.title | escape }}
+            </h1>
+        </a>
+        {%- else -%}
+        <h1>
+            {{ page.title | escape }}
+        </h1>
+        {%- endif -%}
+        {%- if page.byline -%}
+        <span class="byline">{{ page.byline }}</span>
+        {%- endif -%}
+        {{ content }}
+    </div>
+</div>
