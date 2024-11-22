@@ -21,7 +21,9 @@ layout: base
         {%- if page.byline -%}
         <span class="byline">{{ page.byline }}</span>
         {%- endif -%}
-        {{ content }}
+        <div class="content">
+            {{ content }}
+        </div>
         <script src="https://utteranc.es/client.js" repo="cruncha-cruncha/blag" issue-term="pathname" label="utter-"
             theme="github-light" crossorigin="anonymous" async>
             </script>
