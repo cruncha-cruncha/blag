@@ -15,9 +15,16 @@ gem "jekyll", "~> 4.2"
 # gem "github-pages", group: :jekyll_plugins
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "jekyll-feed", "~> 0.12"
-  gem "jekyll-paginate", "~> 1.1"
-  gem 'jekyll-seo-tag', '~> 2.7'
+  gem "jekyll-feed", "~> 0.17"
+  gem "jekyll-paginate-v2", "~> 3.0"
+  gem "jekyll-seo-tag", "~> 2.8"
+end
+
+group :development do
+  gem "logger"
+  gem "csv"
+  gem "ostruct"
+  gem "base64"
 end
 
 # Lock `http_parser.rb` gem to `v0.6.x` on JRuby builds since newer versions of the gem

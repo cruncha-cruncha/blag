@@ -7,8 +7,9 @@
       <button id="nav-btn">&equiv;</button>
     </div>
     <menu id="nav-menu" class="hidden">
-      <a href="#">tags</a>
-      <a href="https://github.com/cruncha-cruncha">github</a>
+      <a href="{{ "/categories" | relative_url }}">categories</a>
+      <a href="https://github.com/cruncha-cruncha">github<span class="nearr">&nearr;</span></a>
+      <a href="{{ "/feed.xml" | relative_url }}">rss</a>
     </menu>
   </div>
 </header>
@@ -16,5 +17,6 @@
 <script defer>
   document.getElementById("nav-btn").addEventListener("click", function () {
     document.getElementById("nav-menu").classList.toggle("hidden");
+    document.getElementById("nav-btn").classList.toggle("active");
   });
 </script>

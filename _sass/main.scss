@@ -1,6 +1,10 @@
-$max-width: 800px;
+$max-width: 768px;
 $md: 768px;
 $black: #333;
+
+* {
+  box-sizing: border-box;
+}
 
 html,
 body {
@@ -20,17 +24,6 @@ body {
   flex-direction: column;
 }
 
-.body-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex-grow: 1;
-  display: flex;
-}
-
 h1,
 h2,
 h3,
@@ -41,6 +34,10 @@ h6 {
   padding: 0;
 }
 
+p {
+  margin-top: 0;
+}
+
 .layout-wrapper {
   width: 100%;
 }
@@ -48,11 +45,17 @@ h6 {
 .layout-container {
   max-width: $max-width;
   margin: 0 auto;
-  padding: 0 20px;
+}
 
-  @media (max-width: $md) {
-    padding: 0 10px;
-  }
+.body-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
 }
 
 @mixin subtle-links() {
@@ -67,17 +70,16 @@ h6 {
 
 header {
   background-color: pink;
-  padding-top: 20px;
-  padding-bottom: 10px;
-
-  @media (max-width: $md) {
-    padding-top: 10px;
-  }
 
   .header-top {
     display: flex;
     justify-content: space-between;
     @include subtle-links();
+    padding: 20px 20px 10px 20px;
+
+    @media (max-width: $md) {
+      padding: 10px;
+    }
   }
 
   #nav-btn {
@@ -88,19 +90,44 @@ header {
     font: inherit;
     cursor: pointer;
     outline: inherit;
+
+    &.active {
+      transform: rotate(90deg);
+    }
   }
 
   menu {
     margin: 0;
     padding: 0;
+    margin-bottom: 10px;
 
     a {
       display: block;
       text-align: right;
-      margin-top: 5px;
+      padding-top: 2px;
+      padding-right: 10px;
+      margin: 8px 7px 12px 0;
+      text-decoration: none;
+      border-right: 5px solid aquamarine;
+      color: $black;
 
-      &:not(:last-child) {
-        margin-bottom: 10px;
+      @media (max-width: $md) {
+        padding-right: 5px;
+        margin-right: 0px;
+      }
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:hover {
+        color: $black;
+      }
+
+      .nearr {
+        padding-left: 2px;
+        position: relative;
+        bottom: 2px;
       }
     }
 
@@ -116,57 +143,79 @@ header {
     flex-direction: column;
     justify-content: space-between;
   }
+}
 
-  ul.posts-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+ul.posts-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-summary {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  @include subtle-links();
+
+  .date {
+    font-size: 0.9rem;
+    color: #666;
   }
 
-  .post-summary {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    @include subtle-links();
-
-    .date {
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .nearr {
-      position: relative;
-      bottom: 5px;
-    }
-
-    .byline {
-      font-style: italic;
-    }
+  .nearr {
+    padding-right: 5px;
+    position: relative;
+    bottom: 5px;
   }
 
-  .pager {
-    display: flex;
-    justify-content: center;
-    @include subtle-links();
+  .byline {
+    font-style: italic;
+  }
 
-    .invisible {
-      visibility: hidden;
-    }
+  a {
+    display: block;
+    width: 100%;
+    border-left: 5px solid aquamarine;
+    padding-right: 20px;
+    padding-left: 15px;
+  }
+}
 
-    > * {
-      margin: 0 5px;
-    }
+.pager {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  @include subtle-links();
 
-    .next-page,
-    .previous-page {
-      position: relative;
-      bottom: 4px;
-    }
+  .invisible {
+    visibility: hidden;
+  }
+
+  > * {
+    margin: 0 5px;
+  }
+
+  .next-page,
+  .previous-page {
+    font-size: 1.5rem;
+    position: relative;
+    bottom: 2px;
   }
 }
 
 .post {
   margin-top: 10px;
   @include subtle-links();
+
+  .layout-container {
+    padding: 0 20px;
+    @media (max-width: $md) {
+      padding: 0 10px;
+    }
+  }
+
+  p {
+    margin-top: 10px;
+  }
 
   .nearr {
     position: relative;
@@ -191,5 +240,38 @@ footer {
     margin: 0;
     padding: 0;
     font-size: 0.5rem;
+  }
+}
+
+.categories {
+  margin-top: 10px;
+  .page-title {
+    margin-top: 0px;
+    padding: 0 20px;
+    @media (max-width: $md) {
+      padding: 0 10px;
+    }
+  }
+  .category-option {
+    margin: 10px 20px;
+    @include subtle-links();
+    h3 {
+      display: inline;
+    }
+
+    @media (max-width: $md) {
+      margin: 10px 10px;
+    }
+  }
+}
+
+.auto-category {
+  margin-top: 10px;
+  .page-heading {
+    margin-bottom: 16px;
+    padding-left: 20px;
+    @media (max-width: $md) {
+      padding-left: 10px;
+    }
   }
 }

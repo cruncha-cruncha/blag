@@ -6,59 +6,10 @@ layout: base
   <div class="layout-container">
     <ul class="posts-list">
       {%- for post in paginator.posts -%}
-      <li class="post-summary">
-        <div class="date">
-          <span>{{ post.date | date: site.date_format }}</span>
-        </div>
-        <div>
-          {%- if post.link -%}
-          <a href="{{ post.link }}">
-            <h1>
-              <span class="nearr">&nearr;</span>
-              {{ post.title | escape }}
-            </h1>
-          </a>
-          {%- else -%}
-          <a href="{{ post.url | relative_url }}">
-            <h1>
-              {{ post.title | escape }}
-            </h1>
-          </a>
-          {%- endif -%}
-        </div>
-        <div>
-          {%- if post.byline -%}
-          {% assign content = post.content | strip_newlines %}
-          {%- if content == "" -%}
-          <span class="byline">{{ post.byline }}</span>
-          {%- else -%}
-          <a href="{{ post.url | relative_url }}"><span class="byline">{{ post.byline }}</span></a>
-          {%- endif -%}
-          {%- endif -%}
-        </div>
-
-      </li>
+      {%- include post_summary.html -%}
       {%- endfor -%}
     </ul>
 
-    <div class="pager">
-      {%- if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | relative_url }}" class="previous-page">&larr;</a>
-      {%- else -%}
-      <a href="#" class="previous-page invisible">&larr;</a>
-      {%- endif %}
-
-      {%- if (paginator.previous_page) or (paginator.next_page) -%}
-        <span class="current-page">{{ paginator.page }}</span>
-      {%- else -%}
-        <span class="current-page invisible">{{ paginator.page }}</span>
-      {%- endif -%}
-
-      {%- if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | relative_url }}" class="next-page">&rarr;</a>
-      {%- else -%}  
-      <a href="#" class="next-page invisible">&rarr;</a>
-      {%- endif %}
-    </div>
+    {%- include page_controls.html -%}
   </div>
 </div>
