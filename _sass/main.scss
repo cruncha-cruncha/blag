@@ -89,9 +89,9 @@ header {
   #nav-btn {
     background: none;
     background-image: url($base-url + "/assets/img/align-justify-svgrepo-com.svg");
-    background-size: 1em;
-    width: 1em;
-    height: 1em;
+    background-size: 1.4em;
+    width: 1.4em;
+    height: 1.4em;
     color: inherit;
     border: none;
     padding: 0;
@@ -132,12 +132,17 @@ header {
         color: $black;
       }
 
+      &:has(+ .no-border) {
+        margin-bottom: 10px;
+      }
+
       &.no-border {
         border-right: none;
         padding-right: 15px;
         margin: 6px 7px 10px 0;
         @media (max-width: $md) {
           padding-right: 10px;
+          margin-right: 0;
         }
       }
 
@@ -218,6 +223,10 @@ ul.posts-list {
     border-left: 5px solid royalblue;
     padding-right: 20px;
     padding-left: 15px;
+
+    @media (max-width: $md) {
+      padding-left: 5px;
+    }
   }
 }
 
