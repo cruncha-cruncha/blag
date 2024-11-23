@@ -1,6 +1,9 @@
+@use "sass:color";
+
 $max-width: 768px;
 $md: 768px;
-$black: #333;
+$black: #2b061e;
+$grey: color.scale($black, $lightness: 30%, $saturation: -90%);
 
 * {
   box-sizing: border-box;
@@ -183,7 +186,7 @@ ul.posts-list {
 
   .date {
     font-size: 0.9rem;
-    color: #666;
+    color: $grey;
   }
 
   h1 {
@@ -276,7 +279,7 @@ ul.posts-list {
 
   .date {
     font-size: 0.9rem;
-    color: #666;
+    color: $grey;
   }
 
   .byline {
