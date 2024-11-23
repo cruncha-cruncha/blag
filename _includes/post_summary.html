@@ -4,25 +4,18 @@
 {%- endif -%}
 
 <li class="post-summary">
-    <a class="date" href="{{ href }}">
+    <a class="date" href="{{ post.url | relative_url }}">
         {{ post.date | date: site.date_format }}
     </a>
     <a class="title" href="{{ href }}">
         <h1>
             {%- if post.link -%}
-            <span class="nearr">&nearr;</span>
+            <span class="nearr"></span>
             {%- endif -%}
             {{ post.title | escape }}
         </h1>
     </a>
     {%- if post.byline -%}
-    {% assign content = post.content | strip_newlines %}
-    {%- if content == "" and post.link -%}
-    <a class="byline" href="{{ post.link }}">{{ post.byline }}</a>
-    {%- elsif content == "" -%}
-    <a class="byline" href="#">{{ post.byline }}</a>
-    {%- else -%}
     <a class="byline" href="{{ post.url | relative_url }}">{{ post.byline }}</a>
-    {%- endif -%}
     {%- endif -%}
 </li>

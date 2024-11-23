@@ -1,3 +1,6 @@
+date_format: "%Y-%m-%d"
+permalink: /:slug
+
 title: 7 Wheels
 email: markassa@gmail.com
 description: >-
@@ -6,9 +9,7 @@ baseurl: "/blag"
 url: "https://cruncha-cruncha.github.io"
 github_username: cruncha-cruncha
 
-date_format: "%Y-%m-%d"
 
-# Build settings
 plugins:
   - jekyll-feed
   - jekyll-paginate-v2

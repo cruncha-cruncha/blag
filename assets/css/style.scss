@@ -1,4 +1,6 @@
 ---
 ---
+// vs code's linter doesn't like this front matter, but jekyll needs it
 
-@use "main";
+$base-url: {{ site.baseurl }};
+@import "main";

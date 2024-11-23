@@ -4,12 +4,17 @@
       <a href="{{ site.baseurl }}/">
         <h2>{{ site.title }}</h2>
       </a>
-      <button id="nav-btn">&equiv;</button>
+      <button id="nav-btn"></button>
     </div>
     <menu id="nav-menu" class="hidden">
-      <a href="{{ "/tags" | relative_url }}">tags</a>
-      <a href="https://github.com/cruncha-cruncha"><span class="nearr">&nearr;</span>github</a>
-      <a href="{{ "/feed.xml" | relative_url }}">rss</a>
+      <a href="{{ "/tag/agg" | relative_url }}">agg</a>
+      <a href="{{ "/tag/item" | relative_url }}">item</a>
+      <a href="{{ "/tag/tool" | relative_url }}">tool</a>
+      <a href="{{ "/tag/til" | relative_url }}">til</a>
+      <a href="{{ "/tag/mine" | relative_url }}">mine</a>
+      <a href="{{ "/tags" | relative_url }}" class="no-border">all tags</a>
+      <a href="https://github.com/cruncha-cruncha" class="no-border"><span class="nearr"></span>github</a>
+      <a href="{{ "/feed.xml" | relative_url }}" class="no-border">rss</a>
     </menu>
   </div>
 </header>

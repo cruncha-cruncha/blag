@@ -12,7 +12,7 @@ body {
   padding: 0;
   font-size: 16px;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
   color: $black;
   min-height: 100vh;
   height: 100%;
@@ -74,6 +74,7 @@ header {
   .header-top {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     @include subtle-links();
     padding: 20px 20px 10px 20px;
 
@@ -84,6 +85,10 @@ header {
 
   #nav-btn {
     background: none;
+    background-image: url($base-url + "/assets/img/align-justify-svgrepo-com.svg");
+    background-size: 1em;
+    width: 1em;
+    height: 1em;
     color: inherit;
     border: none;
     padding: 0;
@@ -124,10 +129,30 @@ header {
         color: $black;
       }
 
+      &.no-border {
+        border-right: none;
+        padding-right: 15px;
+        margin: 6px 7px 10px 0;
+        @media (max-width: $md) {
+          padding-right: 10px;
+        }
+      }
+
       .nearr {
-        padding-right: 2px;
+        display: inline-block;
         position: relative;
-        bottom: 2px;
+        height: 1em;
+
+        &::before {
+          content: "";
+          background-image: url($base-url + "/assets/img/arrow-up-right-svgrepo-com.svg");
+          height: 1em;
+          width: 1em;
+          background-size: 1em;
+          display: inline-block;
+          position: relative;
+          bottom: -4px;
+        }
       }
     }
 
@@ -161,10 +186,23 @@ ul.posts-list {
     color: #666;
   }
 
+  h1 {
+    display: flex;
+    align-items: center;
+  }
+
   .nearr {
-    padding-right: 5px;
-    position: relative;
-    bottom: 5px;
+    display: inline-block;
+    height: 1em;
+
+    &::before {
+      content: "";
+      background-image: url($base-url + "/assets/img/arrow-up-right-svgrepo-com.svg");
+      height: 1em;
+      width: 1em;
+      background-size: 1em;
+      display: inline-block;
+    }
   }
 
   .byline {
@@ -217,10 +255,23 @@ ul.posts-list {
     margin-top: 10px;
   }
 
+  h1:has(.nearr) {
+    display: flex;
+    align-items: center;
+  }
+
   .nearr {
-    padding-right: 5px;
-    position: relative;
-    bottom: 5px;
+    display: inline-block;
+    height: 1em;
+
+    &::before {
+      content: "";
+      background-image: url($base-url + "/assets/img/arrow-up-right-svgrepo-com.svg");
+      height: 1em;
+      width: 1em;
+      background-size: 1em;
+      display: inline-block;
+    }
   }
 
   .date {
@@ -237,13 +288,18 @@ ul.posts-list {
 
     a {
       white-space: nowrap;
+      position: relative;
     }
 
     a::before {
-      content: "\2197";
+      content: "";
+      background-image: url($base-url + "/assets/img/arrow-up-right-svgrepo-com.svg");
+      height: 1em;
+      width: 1em;
+      background-size: 1em;
       display: inline-block;
       position: relative;
-      bottom: 2px;
+      bottom: -4px;
     }
   }
 
