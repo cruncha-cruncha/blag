@@ -4,8 +4,11 @@
 {%- endif -%}
 
 <li class="post-summary">
-    <a class="date" href="{{ post.url | relative_url }}">
+    <a class="info" href="{{ post.url | relative_url }}">
         {{ post.date | date: site.date_format }}
+        {%- if post.byline -%}
+        , {{ post.byline }}
+        {%- endif -%}
     </a>
     <a class="title" href="{{ href }}">
         <h1>
@@ -15,7 +18,4 @@
             {{ post.title | escape }}
         </h1>
     </a>
-    {%- if post.byline -%}
-    <a class="byline" href="{{ post.url | relative_url }}">{{ post.byline }}</a>
-    {%- endif -%}
 </li>

@@ -4,8 +4,11 @@ layout: base
 
 <div class="post layout-wrapper">
     <div class="layout-container">
-        <div class="date">
-            <span>{{ page.date | date: site.date_format }}</span>
+        <div class="info">
+            <span class="date">{{ page.date | date: site.date_format }}</span>
+            {%- if page.byline -%}
+            , <span class="byline">{{ page.byline }}</span>
+            {%- endif -%}
         </div>
         {%- if page.link -%}
         <a href="{{ page.link }}">
@@ -18,15 +21,12 @@ layout: base
             {{ page.title | escape }}
         </h1>
         {%- endif -%}
-        {%- if page.byline -%}
-        <span class="byline">{{ page.byline }}</span>
-        {%- endif -%}
         <div class="content">
             {{ content }}
         </div>
         <div class="tags">
             {%- for tag in page.tags -%}
-            <a href="{{ "tag/" | relative_url }}{{ tag | slugize }}">{{ tag }}</a>
+            <a href="{{ " tag/" | relative_url }}{{ tag | slugize }}">{{ tag }}</a>
             {%- endfor -%}
         </div>
         <script src="https://utteranc.es/client.js" repo="cruncha-cruncha/blag" issue-term="pathname" label="utter-"
