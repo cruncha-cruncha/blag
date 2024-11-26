@@ -84,14 +84,20 @@ header {
     @media (max-width: $md) {
       padding: 12px 10px 10px 10px;
     }
+
+    h2 {
+      font-family:'Courier New', Courier, monospace;
+      font-size: 1rem;
+      font-weight: normal;
+    }
   }
 
   #nav-btn {
     background: none;
     background-image: url($base-url + "/assets/img/align-justify-svgrepo-com.svg");
-    background-size: 1.4em;
-    width: 1.4em;
-    height: 1.4em;
+    background-size: 1em;
+    width: 1em;
+    height: 1em;
     color: inherit;
     border: none;
     padding: 0;
