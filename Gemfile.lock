@@ -28,7 +28,6 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0)
     eventmachine (1.2.7)
-    ffi (1.17.0)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
     ffi (1.17.0-arm-linux-gnu)
@@ -41,22 +40,22 @@ GEM
     ffi (1.17.0-x86_64-linux-musl)
     forwardable-extended (2.6.0)
     gemoji (4.1.0)
-    google-protobuf (4.28.3)
+    google-protobuf (4.29.0)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.28.3-aarch64-linux)
+    google-protobuf (4.29.0-aarch64-linux)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.28.3-arm64-darwin)
+    google-protobuf (4.29.0-arm64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.28.3-x86-linux)
+    google-protobuf (4.29.0-x86-linux)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.28.3-x86_64-darwin)
+    google-protobuf (4.29.0-x86_64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.28.3-x86_64-linux)
+    google-protobuf (4.29.0-x86_64-linux)
       bigdecimal
       rake (>= 13)
     html-pipeline (2.14.3)
@@ -105,8 +104,18 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.6.1)
     mercenary (0.4.0)
-    minitest (5.25.1)
+    minitest (5.25.2)
+    nokogiri (1.16.7-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.7-arm-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.7-x86-linux)
+      racc (~> 1.4)
     nokogiri (1.16.7-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     ostruct (0.6.1)
     pathutil (0.16.2)
@@ -120,18 +129,9 @@ GEM
     rexml (3.3.9)
     rouge (4.5.1)
     safe_yaml (1.0.5)
-    sass-embedded (1.81.0)
-      google-protobuf (~> 4.28)
-      rake (>= 13)
-    sass-embedded (1.81.0-aarch64-linux-android)
-      google-protobuf (~> 4.28)
     sass-embedded (1.81.0-aarch64-linux-gnu)
       google-protobuf (~> 4.28)
     sass-embedded (1.81.0-aarch64-linux-musl)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-aarch64-mingw-ucrt)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-arm-linux-androideabi)
       google-protobuf (~> 4.28)
     sass-embedded (1.81.0-arm-linux-gnueabihf)
       google-protobuf (~> 4.28)
@@ -139,27 +139,11 @@ GEM
       google-protobuf (~> 4.28)
     sass-embedded (1.81.0-arm64-darwin)
       google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-riscv64-linux-android)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-riscv64-linux-gnu)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-riscv64-linux-musl)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-x86-cygwin)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-x86-linux-android)
-      google-protobuf (~> 4.28)
     sass-embedded (1.81.0-x86-linux-gnu)
       google-protobuf (~> 4.28)
     sass-embedded (1.81.0-x86-linux-musl)
       google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-x86-mingw-ucrt)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-x86_64-cygwin)
-      google-protobuf (~> 4.28)
     sass-embedded (1.81.0-x86_64-darwin)
-      google-protobuf (~> 4.28)
-    sass-embedded (1.81.0-x86_64-linux-android)
       google-protobuf (~> 4.28)
     sass-embedded (1.81.0-x86_64-linux-gnu)
       google-protobuf (~> 4.28)
@@ -176,30 +160,19 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  aarch64-linux-android
   aarch64-linux-gnu
   aarch64-linux-musl
-  aarch64-mingw-ucrt
-  arm-linux-androideabi
+  arm-linux
   arm-linux-gnu
   arm-linux-gnueabihf
   arm-linux-musl
   arm-linux-musleabihf
   arm64-darwin
-  riscv64-linux-android
-  riscv64-linux-gnu
-  riscv64-linux-musl
-  ruby
-  x86-cygwin
   x86-linux
-  x86-linux-android
   x86-linux-gnu
   x86-linux-musl
-  x86-mingw-ucrt
-  x86_64-cygwin
   x86_64-darwin
   x86_64-linux
-  x86_64-linux-android
   x86_64-linux-gnu
   x86_64-linux-musl
 
