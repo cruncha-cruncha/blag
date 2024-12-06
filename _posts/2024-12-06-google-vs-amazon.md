@@ -6,6 +6,8 @@ link: https://gist.github.com/chitchcock/1281611
 byline: Amazon does platforms better than anyone else
 tags: item
 ---
+Steve Yagge: 
+
 > His Big Mandate went something along these lines:
 > 1. All teams will henceforth expose their data and functionality through service interfaces.
 > 2. Teams must communicate with each other through these interfaces.
@@ -32,5 +34,3 @@ tags: item
 ...
 
 > A product is useless without a platform, or more precisely and accurately, a platform-less product will always be replaced by an equivalent platform-ized product.
-
-Steve Yagge
