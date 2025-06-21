@@ -1,3 +1,6 @@
+name: "Build and Deploy Blag"
+on:
+  workflow_dispatch:
 jobs:
   # Build job
   build:
