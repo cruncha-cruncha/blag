@@ -1,12 +1,20 @@
 name: "Build and Deploy Blag"
+
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   # Build job
   build:
     # Specify runner +  build & upload the static files as an artifact
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Build static files
         id: build
         run: |
