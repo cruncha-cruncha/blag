@@ -15,7 +15,11 @@ pub fn generate_posts(input_dir: &std::path::Path, output_dir: &std::path::Path)
             .metadata()
             .and_then(|m| m.modified())
             .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
-        let last_updated = format!(r#"<p class="last-updated"><i>Last updated: {:?}<i></p>"#, last_updated);
+        let last_updated = format_datetime(last_updated);
+        let last_updated = format!(
+            r#"<p class="last-updated"><i>Last updated: {}<i></p>"#,
+            last_updated
+        );
 
         let content = std::fs::read_to_string(&path).expect("Failed to read file content");
         let mut html_content = String::new();
@@ -68,4 +72,9 @@ pub fn safe_title(title: &str) -> String {
     let re = regex::Regex::new(r"[^a-z0-9_-]").unwrap();
     let safe_title = re.replace_all(&title, "");
     safe_title.to_string()
+}
+
+pub fn format_datetime(sys_time: std::time::SystemTime) -> String {
+    let datetime: chrono::DateTime<chrono::Local> = sys_time.into();
+    datetime.format("%B %e, %Y").to_string()
 }
