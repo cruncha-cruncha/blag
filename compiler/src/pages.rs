@@ -26,7 +26,7 @@ pub fn generate_pages(input_dir: &std::path::Path, output_dir: &std::path::Path)
             .modified()
             .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
 
-        let link = format!(r#"/{}/{}.html"#, crate::posts::SUB_DIR, safe_title);
+        let link = format!(r#"/blag/{}/{}.html"#, crate::posts::SUB_DIR, safe_title);
         let html_content = format!(r#"<a href="{}">{}</a>"#, link, title);
 
         posts.push(PostInfo {
