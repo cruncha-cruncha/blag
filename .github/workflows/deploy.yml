@@ -19,7 +19,7 @@ jobs:
         id: build
         run: |
           echo "Building Docker image..."
-          docker build -t blag-compiler -f ./compiler/Dockerfile ./compiler
+          docker build --no-cache -t blag-compiler -f ./compiler/Dockerfile ./compiler
           echo "Making built directory..."
           mkdir -p built
           echo "Running Docker container..."
