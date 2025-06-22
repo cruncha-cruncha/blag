@@ -1,6 +1,9 @@
 name: "Build and Deploy Blag"
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:

@@ -84,31 +84,33 @@ pub fn generate_pages(input_dir: &std::path::Path, output_dir: &std::path::Path)
 fn add_navigation(buffer: &mut String, current_page: usize, total_pages: usize) {
     buffer.push_str(r#"<nav>"#);
 
+    buffer.push_str(r#"<span>navigation: </span>"#);
+
     if current_page > 0 {
         buffer.push_str(&format!(
-            r#"<a href="/{}/{}.html">previous</a>"#,
-            SUB_DIR, current_page - 1
+            r#"<a href="/{}/{}.html">previous page</a>"#,
+            SUB_DIR,
+            current_page - 1
         ));
     } else {
-        buffer.push_str(&format!(
-            r#"<a href="/{}/{}.html" class="disabled">previous</a>"#,
-            SUB_DIR, current_page - 1
-        ));
+        buffer.push_str(r#"<span>previous page</span>"#);
     }
 
-    buffer.push_str(r#"<a href="https://github.com/cruncha-cruncha/blag">github</a>"#);
+    buffer.push_str(r#"<span>, </span>"#);
 
     if current_page + 1 < total_pages {
         buffer.push_str(&format!(
-            r#"<a href="/{}/{}.html">next</a>"#,
-            SUB_DIR, current_page + 1
+            r#"<a href="/{}/{}.html">next page</a>"#,
+            SUB_DIR,
+            current_page + 1
         ));
     } else {
-        buffer.push_str(&format!(
-            r#"<a href="/{}/{}.html" class="disabled">next</a>"#,
-            SUB_DIR, current_page + 1
-        ));
+        buffer.push_str(r#"<span>next page</span>"#);
     }
+
+    buffer.push_str(r#"<span>, </span>"#);
+
+    buffer.push_str(r#"<a href="https://github.com/cruncha-cruncha/blag">github</a>"#);
 
     buffer.push_str(r#"</nav>"#);
 }
