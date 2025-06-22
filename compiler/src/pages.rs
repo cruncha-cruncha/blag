@@ -1,45 +1,13 @@
 pub const SUB_DIR: &str = "pages";
 const POSTS_PER_PAGE: usize = 50;
 
-pub struct PostInfo {
-    pub modified: std::time::SystemTime,
-    pub html_content: String,
-}
-
-pub fn generate_pages(input_dir: &std::path::Path, output_dir: &std::path::Path) {
-    let read_dir = std::fs::read_dir(input_dir).expect("Invalid input directory");
-    let mut posts: Vec<PostInfo> = Vec::new();
-
-    for file in read_dir {
-        let file = file.expect("Failed to read file");
-        let path = file.path();
-        if !path.is_file() {
-            continue;
-        }
-
-        let title = path.file_stem().and_then(|s| s.to_str()).unwrap_or("Post");
-        let safe_title = crate::posts::safe_title(title);
-
-        let modified = file
-            .metadata()
-            .expect("Failed to get metadata")
-            .modified()
-            .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
-
-        let link = format!(r#"/blag/{}/{}.html"#, crate::posts::SUB_DIR, safe_title);
-        let html_content = format!(r#"<p><a href="{}">{}</a></p>"#, link, title);
-
-        posts.push(PostInfo {
-            modified,
-            html_content,
-        });
-    }
-
-    posts.sort_by(|a, b| b.modified.cmp(&a.modified));
+pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, output_dir: &std::path::Path) {
     let mut pages: Vec<String> = Vec::new();
+    let mut files = file_info.values().cloned().collect::<Vec<_>>();
+    files.sort_by(|a, b| b.updated_at.cmp(&a.updated_at));
 
-    let total_chunks = (posts.len() + POSTS_PER_PAGE - 1) / POSTS_PER_PAGE;
-    for (i, chunk) in posts.chunks(POSTS_PER_PAGE).enumerate() {
+    let total_chunks = (files.len() + POSTS_PER_PAGE - 1) / POSTS_PER_PAGE;
+    for (i, chunk) in files.chunks(POSTS_PER_PAGE).enumerate() {
         let mut buffer = format!(
             r#"
 <!DOCTYPE html>
@@ -54,7 +22,11 @@ pub fn generate_pages(input_dir: &std::path::Path, output_dir: &std::path::Path)
         );
 
         for post in chunk {
-            buffer.push_str(&post.html_content);
+            let safe_title = crate::posts::format_safe_title(&post.title);
+            let link = format!(r#"/blag/{}/{}.html"#, crate::posts::SUB_DIR, safe_title);
+            let html_content = format!(r#"<p><a href="{}">{}</a></p>"#, link, post.title);
+            buffer.push_str(&html_content);
+            buffer.push('\n');
         }
 
         add_navigation(&mut buffer, i, total_chunks);

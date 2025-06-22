@@ -7,3 +7,5 @@ edition = "2024"
 pulldown-cmark = "0.13"
 regex = "1.11"
 chrono = "0.4"
+bincode = { version = "2.0", features = ["std"] }
+sha2 = "0.10"
