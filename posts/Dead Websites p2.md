@@ -1,3 +1,3 @@
-NOTCOT.org
+# NOTCOT.org
 
 "2005 - 2020 was nearly endless ideas + aesthetics + amusements shared on NOTCOT.com and NOTCOT.org. At the end there are 64061 link posts that made it to NOTCOT.org, and over 5500 features on NOTCOT.com. (Don't worry, the archives have been preserved!) After oversharing, globetrotting, and publicly tracking all that amused me in the world of art, technology, and design for ages, the internet changed and so did I. Currently, NOTlabs (our experimental design studio est. 2012) lives on, and has taken on so many forms... from building out and adventuring in the NOTFZJ80, to laser/3D print projects, to brand/ad collabs, to building big buildings... and most recently SUPERSPEEDSHOP." - [notcot.org](notcot.org) or jean/NOTCOT
