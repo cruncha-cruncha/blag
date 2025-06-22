@@ -8,15 +8,16 @@ WORKDIR /blag-compiler
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
 
-# this build step will cache your dependencies
-RUN cargo build --release
+# cache dependencies
+RUN cargo fetch
+
+# remove default rust source files
 RUN rm src/*.rs
 
 # copy your source tree
 COPY ./src ./src
 
 # build for release
-# RUN rm ./target/release/deps/blag-compiler*
 RUN cargo build --release
 
 # our final base
