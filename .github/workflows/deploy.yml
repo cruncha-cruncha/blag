@@ -18,8 +18,11 @@ jobs:
       - name: Build static files
         id: build
         run: |
+          echo "Building Docker image..."
           docker build -t blag-compiler -f ./compiler/Dockerfile ./compiler
+          echo "Making built directory..."
           mkdir -p built
+          echo "Running Docker container..."
           docker run --rm \
             -v "$PWD/posts:/blag/posts" \
             -v "$PWD/built:/blag/build" \
