@@ -11,6 +11,12 @@ pub fn generate_posts(input_dir: &std::path::Path, output_dir: &std::path::Path)
             continue;
         }
 
+        let last_updated = file
+            .metadata()
+            .and_then(|m| m.modified())
+            .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
+        let last_updated = format!(r#"<p class="last-updated"><i>Last updated: {:?}<i></p>"#, last_updated);
+
         let content = std::fs::read_to_string(&path).expect("Failed to read file content");
         let mut html_content = String::new();
         let parser = pulldown_cmark::Parser::new(&content);
@@ -29,10 +35,11 @@ pub fn generate_posts(input_dir: &std::path::Path, output_dir: &std::path::Path)
     </head>
     <body class="post">
         {}
+        {}
     </body>
 </html>
 "#,
-            title, html_content
+            title, html_content, last_updated
         );
 
         let safe_title = safe_title(title);
