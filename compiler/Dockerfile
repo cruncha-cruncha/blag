@@ -4,7 +4,7 @@ FROM rust:1.87 AS build
 RUN USER=root cargo new --bin blag-compiler
 WORKDIR /blag-compiler
 
-# copy over your manifests
+# copy over the manifests
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
 
@@ -14,7 +14,7 @@ RUN cargo fetch
 # remove default rust source files
 RUN rm src/*.rs
 
-# copy your source tree
+# copy the source tree
 COPY ./src ./src
 
 # build for release
@@ -23,7 +23,7 @@ RUN cargo build --release
 # our final base
 FROM gcr.io/distroless/cc AS runtime
 
-# copy the build artifact from the build stage
+# copy artifact from the build stage
 COPY --from=build /blag-compiler/target/release/blag-compiler .
 
 # tell the script where to find things
