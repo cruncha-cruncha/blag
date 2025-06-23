@@ -1,46 +1,47 @@
-const FILE_PATH: &str = "/blag_info.bin";
-
 pub type FileInfoMap = std::collections::HashMap<String, PersistentFileInfo>;
 
-#[derive(Clone, bincode::Encode, bincode::Decode)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct PersistentFileInfo {
     pub title: String,
-    pub content_hash: Vec<u8>,
-    pub updated_at: std::time::SystemTime,
+    pub content_hash: String, // base64-encoded sha256
+    pub updated_at: u64,      // unix timestamp in seconds
 }
 
-pub fn read_info() -> FileInfoMap {
-    let file_path = std::path::Path::new(FILE_PATH);
+pub fn read_info(file_path: &std::path::Path) -> FileInfoMap {
     if !file_path.exists() {
-        println!("blag_info.bin not found");
+        println!("blag_info.json not found");
         return std::collections::HashMap::new();
     }
 
-    let file = std::fs::File::open(file_path).expect("Failed to open blag_info.bin");
+    let file = std::fs::File::open(file_path).expect("Failed to open blag_info.json");
     let mut reader = std::io::BufReader::new(file);
-    match bincode::decode_from_std_read::<FileInfoMap, _, _>(
-        &mut reader,
-        bincode::config::standard(),
-    ) {
-        Ok(file_info) => {
-            println!("blag_info.bin loaded successfully.");
-            file_info
-        }
+    match serde_json::from_reader::<_, FileInfoMap>(&mut reader) {
+        Ok(file_info) => file_info,
         Err(e) => {
-            eprintln!("Failed to deserialize blag_info.bin: {}", e);
+            eprintln!("Failed to deserialize file info from JSON: {}", e);
             std::collections::HashMap::new()
         }
     }
 }
 
-pub fn hash_content(content: &str) -> Vec<u8> {
-    <sha2::Sha256 as sha2::Digest>::digest(content.as_bytes()).to_vec()
+pub fn hash_content(content: &str) -> String {
+    let bytes = <sha2::Sha256 as sha2::Digest>::digest(content.as_bytes());
+    base64::Engine::encode(&base64::engine::general_purpose::STANDARD, bytes)
 }
 
-pub fn write_info(file_info: &FileInfoMap) {
-    let file_path = std::path::Path::new(FILE_PATH);
-    let file = std::fs::File::create(file_path).expect("Failed to create blag_info.bin");
+pub fn get_timestamp() -> u64 {
+    system_to_timestamp(std::time::SystemTime::now())
+}
+
+pub fn system_to_timestamp(time: std::time::SystemTime) -> u64 {
+    time.duration_since(std::time::UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_secs()
+}
+
+pub fn write_info(file_info: &FileInfoMap, file_path: &std::path::Path) {
+    let file = std::fs::File::create(file_path).expect("Failed to create blag_info.json");
     let mut writer = std::io::BufWriter::new(file);
-    bincode::encode_into_std_write(file_info, &mut writer, bincode::config::standard())
-        .expect("Failed to serialize blag_info.bin");
+    serde_json::to_writer_pretty(&mut writer, &file_info)
+        .expect("Failed to serialize file info to JSON");
 }

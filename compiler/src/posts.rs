@@ -1,11 +1,11 @@
 pub const SUB_DIR: &str = "posts";
 
 pub fn generate_posts(
-    input_dir: &std::path::Path,
+    posts_path: &std::path::Path,
     file_info: &mut crate::persistence::FileInfoMap,
-    output_dir: &std::path::Path,
+    build_path: &std::path::Path,
 ) {
-    let read_dir = std::fs::read_dir(input_dir).expect("Invalid input directory");
+    let read_dir = std::fs::read_dir(posts_path).expect("Invalid input directory");
     let mut seen_files: std::collections::HashSet<String> = std::collections::HashSet::new();
 
     for file in read_dir {
@@ -31,16 +31,24 @@ pub fn generate_posts(
         let safe_title = format_safe_title(title);
 
         // get last_updated from file_info, updating it if necessary
-        let last_updated: std::time::SystemTime;
+        let last_updated: u64;
         let content_hash = crate::persistence::hash_content(&content);
         if let Some(info) = file_info.get_mut(title) {
             if info.content_hash != content_hash {
                 info.content_hash = content_hash;
-                info.updated_at = std::time::SystemTime::now();
+                info.updated_at = crate::persistence::get_timestamp();
             }
             last_updated = info.updated_at;
         } else {
-            last_updated = std::time::SystemTime::now();
+            if std::env::var("MODIFIED_AT_OS").is_ok() {
+                last_updated = path.metadata().and_then(|m| m.modified()).map_or_else(
+                    |_| crate::persistence::get_timestamp(),
+                    |t| crate::persistence::system_to_timestamp(t),
+                );
+            } else {
+                last_updated = crate::persistence::get_timestamp();
+            }
+            
             file_info.insert(
                 title.to_string(),
                 crate::persistence::PersistentFileInfo {
@@ -78,7 +86,7 @@ pub fn generate_posts(
         );
 
         // save the HTML content to output directory
-        let output_path = output_dir
+        let output_path = build_path
             .to_owned()
             .join(SUB_DIR)
             .join(format!("{}.html", safe_title));
@@ -107,7 +115,10 @@ pub fn format_safe_title(title: &str) -> String {
     safe_title.to_string()
 }
 
-pub fn format_datetime(sys_time: std::time::SystemTime) -> String {
+pub fn format_datetime(timestamp: u64) -> String {
+    let sys_time = std::time::SystemTime::UNIX_EPOCH
+        .checked_add(std::time::Duration::from_secs(timestamp))
+        .expect("Timestamp is too large");
     let datetime: chrono::DateTime<chrono::Local> = sys_time.into();
     // Month day, Year
     datetime.format("%B %e, %Y").to_string()

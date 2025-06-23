@@ -1,7 +1,7 @@
 pub const SUB_DIR: &str = "pages";
 const POSTS_PER_PAGE: usize = 50;
 
-pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, output_dir: &std::path::Path) {
+pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, build_path: &std::path::Path) {
     let mut pages: Vec<String> = Vec::new();
     let mut files = file_info.values().cloned().collect::<Vec<_>>();
     files.sort_by(|a, b| b.updated_at.cmp(&a.updated_at));
@@ -42,7 +42,7 @@ pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, output_dir: &
     }
 
     for (i, page) in pages.iter().enumerate() {
-        let output_path = output_dir
+        let output_path = build_path
             .to_owned()
             .join(SUB_DIR)
             .join(format!("{}.html", i + 1));

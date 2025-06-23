@@ -18,28 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Pull Docker image
+        run: docker pull ghcr.io/cruncha-cruncha/blag-compiler:latest
       - name: Build static files
-        id: build
         run: |
-          docker build -t blag-compiler -f ./compiler/Dockerfile ./compiler
           mkdir -p built
           docker run --rm \
             -v "$PWD/posts:/blag/posts" \
             -v "$PWD/built:/blag/build" \
-            -v "$PWD/compiler/blag_info.bin:/blag_info.bin" \
-            blag-compiler
+            -v "$PWD/compiler/blag_info.json:/blag_info.json" \
+            ghcr.io/cruncha-cruncha/blag-compiler:latest
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
           path: built/
-      - name: Commit and push updated blag_info.bin
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add compiler/blag_info.bin
-          git commit -m "Update blag_info.bin [skip ci]" || echo "No changes to commit"
-          git push
 
   # Deployment job
   deploy:
