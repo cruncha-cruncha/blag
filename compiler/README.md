@@ -1,6 +1,8 @@
+Try not to modify blag_info.json manually.
+
 Read over `./init.sh`, run it if you want.
 
-Read over `Dockerfile`, it's used by the Github action.
+The `Dockerfile` is used by a Github action.
 
 ```
 docker build -t ghcr.io/cruncha-cruncha/blag-compiler:latest .
