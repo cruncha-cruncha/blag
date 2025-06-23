@@ -20,5 +20,7 @@ cd "$SCRIPT_DIR" && cargo run --release
 git add "$SCRIPT_DIR/blag_info.json"
 EOF
 
+# use `git commit --no-verify ...` to skip this hook if needed
+
 # make sure it's executable
 chmod +x "$HOOKS_DIR/pre-commit"
