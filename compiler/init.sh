@@ -5,7 +5,7 @@ cargo build --release
 
 # create the blag_info.json file with file modified times pulled from the OS
 # comment out this line if you already have a blag_info.json file or if you don't have any posts
-MODIFIED_AT_OS=true && cargo run --release
+MODIFIED_AT_OS=true cargo run --release
 
 # Get the git hooks directory
 HOOKS_DIR=$(git rev-parse --git-path hooks)
