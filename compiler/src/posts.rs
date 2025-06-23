@@ -7,13 +7,13 @@ pub fn generate_posts(
 ) {
     let read_dir = std::fs::read_dir(posts_path).expect("Invalid input directory");
     let mut seen_files: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut count = 0;
 
     for file in read_dir {
         // make sure it's a markdown file
         let file = file.expect("Failed to read file");
         let path = file.path();
         if !path.is_file() || path.extension().map_or(false, |ext| ext != "md") {
-            println!("Skipping non-markdown-file: {:?}", path);
             continue;
         }
 
@@ -37,6 +37,7 @@ pub fn generate_posts(
             if info.content_hash != content_hash {
                 info.content_hash = content_hash;
                 info.updated_at = crate::persistence::get_timestamp();
+                println!("Post updated: {}", safe_title);
             }
             last_updated = info.updated_at;
         } else {
@@ -57,6 +58,8 @@ pub fn generate_posts(
                     updated_at: last_updated,
                 },
             );
+
+            println!("Post created: {}", safe_title);
         }
 
         // pretty-print last_updated
@@ -93,8 +96,12 @@ pub fn generate_posts(
         std::fs::create_dir_all(output_path.parent().unwrap())
             .expect("Failed to create output directory");
         std::fs::write(output_path, full_out).expect("Failed to write output file");
-        println!("Generated post: {}", safe_title);
+        
+        count += 1;
     }
+
+    // log
+    println!("Generated {} posts", count);
 
     // remove files from file_info that were not seen in this run
     file_info.retain(|name, _| seen_files.contains(name));

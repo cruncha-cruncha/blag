@@ -41,6 +41,7 @@ pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, build_path: &
         pages.push(buffer);
     }
 
+    let mut count = 0;
     for (i, page) in pages.iter().enumerate() {
         let output_path = build_path
             .to_owned()
@@ -49,8 +50,11 @@ pub fn generate_pages(file_info: &crate::persistence::FileInfoMap, build_path: &
         std::fs::create_dir_all(output_path.parent().unwrap())
             .expect("Failed to create output directory");
         std::fs::write(output_path, page).expect("Failed to write output file");
-        println!("Generated page: {}", i + 1);
+        count += 1;
     }
+
+    // log
+    println!("Generated {} pages", count);
 }
 
 fn add_navigation(buffer: &mut String, current_page: usize, total_pages: usize) {
