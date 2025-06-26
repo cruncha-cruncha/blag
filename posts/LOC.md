@@ -1,6 +1,8 @@
 # Any observed statistical regularity will tend to collapse once pressure is placed upon it for control purposes
 
-Aka: when a measure becomes a metric, it ceases to be a good measure.
+Aka: when a measure becomes a target, it ceases to be a good measure. (Goodhart's Law)
+
+Side note: Goodhart is still alive (as of this writing). He was born 23 October 1936 in Oxford, England. He commented that "it does feel slightly odd to have one's public reputation largely based on a minor footnote". See [The Rarity of Genius](/blag/posts/the_rarity_of_genius.html).
 
 But also, some metrics are bad from the get-go:
 
