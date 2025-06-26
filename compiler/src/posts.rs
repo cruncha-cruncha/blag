@@ -65,7 +65,7 @@ pub fn generate_posts(
         // pretty-print last_updated
         let last_updated = format_datetime(last_updated);
         let last_updated = format!(
-            r#"<p class="last-updated"><i>Last updated: {}<i></p>"#,
+            r#"<p class="last-updated"><i>last updated: {}<i></p>"#,
             last_updated
         );
 
