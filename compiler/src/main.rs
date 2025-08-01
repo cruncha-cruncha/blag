@@ -3,6 +3,7 @@ mod persistence;
 mod posts;
 mod utils;
 
+// TODO: get these from the github workflow
 pub const ROOT_SUBPATH: &str = "blag";
 pub const GITHUB_LINK: &str = "https://github.com/cruncha-cruncha/blag";
 
@@ -14,8 +15,7 @@ fn main() {
     let site_path = std::path::Path::new(&site_dir);
 
     // where should the compiled markdown files end up?
-    // TODO: if building local, use '../blag/build' instead
-    let build_dir = std::env::var("BUILD_DIR").unwrap_or("../build".to_string());
+    let build_dir = std::env::var("BUILD_DIR").unwrap_or(format!("../{}", crate::ROOT_SUBPATH));
     let build_path = std::path::Path::new(&build_dir);
 
     // how do we track file changes?

@@ -5,6 +5,7 @@ pub struct PersistentFileInfo {
     pub updated_at: u64,      // unix timestamp in seconds
 }
 
+// TODO: convert this to a sorted data structure, so file modifications in git are more sane
 // first key is the directory, second key is a hash of (title + content_hash)
 type TrackingInfoMap =
     std::collections::HashMap<String, std::collections::HashMap<String, PersistentFileInfo>>;

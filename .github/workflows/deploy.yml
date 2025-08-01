@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p built
           docker run --rm \
-            -v "$PWD/posts:/blag/posts" \
+            -v "$PWD/site:/blag/site" \
             -v "$PWD/built:/blag/build" \
             -v "$PWD/compiler/blag_info.json:/blag_info.json" \
             ghcr.io/cruncha-cruncha/blag-compiler:latest

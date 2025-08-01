@@ -27,7 +27,7 @@ FROM gcr.io/distroless/cc AS runtime
 COPY --from=build /blag-compiler/target/release/blag-compiler .
 
 # tell the script where to find things
-ENV POSTS_DIR=/blag/posts
+ENV SITE_DIR=/blag/site
 ENV BUILD_DIR=/blag/build
 ENV INFO_FILE=/blag_info.json
 
