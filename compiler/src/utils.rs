@@ -1,4 +1,4 @@
-pub fn format_safe_title(title: &str) -> String {
+pub fn format_safe_text(title: &str) -> String {
     // Use only lowercase letters a–z, digits 0–9, hyphens, and underscores if possible
     let title = title
         .to_lowercase()

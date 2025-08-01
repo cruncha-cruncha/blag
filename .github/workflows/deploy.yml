@@ -30,6 +30,7 @@ jobs:
             -v "$PWD/site:/blag/site" \
             -v "$PWD/built:/blag/build" \
             -v "$PWD/compiler/blag_info.json:/blag_info.json" \
+            -e REPO_NAME=${{ github.event.repository.name }} \
             ghcr.io/cruncha-cruncha/blag-compiler:latest
       - name: Upload static files as artifact
         id: deployment

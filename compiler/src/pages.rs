@@ -1,29 +1,23 @@
-pub const POSTS_PER_PAGE: usize = 50;
-pub const INDEX_NAME: &str = "pages";
-
-pub fn generate_pages(
-    tracking_info: &crate::persistence::TrackingInfo,
-    build_path: &std::path::Path,
-) {
+pub fn generate_pages(config: &crate::Config, tracking_info: &crate::persistence::TrackingInfo) {
     let mut page_count = 0;
     let mut sub_dir_count = 0;
 
     for (sub_dir, posts) in tracking_info.into_iter() {
         let mut pages = Vec::new();
-        let mut buffer = PageBuffer::new(sub_dir);
+        let mut buffer = PageBuffer::new(config, sub_dir);
 
         println!("Generating pages for subdirectory: {}", sub_dir);
 
         let mut files = posts.values().cloned().collect::<Vec<_>>();
         files.sort_by(|a, b| b.updated_at.cmp(&a.updated_at));
 
-        let total_chunks = (files.len() + POSTS_PER_PAGE - 1) / POSTS_PER_PAGE;
+        let total_chunks = (files.len() + config.posts_per_page - 1) / config.posts_per_page;
 
         let mut wrote_page = false;
-        for (i, chunk) in files.chunks(POSTS_PER_PAGE).enumerate() {
+        for (i, chunk) in files.chunks(config.posts_per_page).enumerate() {
             buffer.write_header();
             for post in chunk {
-                buffer.add_post(post);
+                buffer.add_post(&post.title);
             }
             buffer.add_navigation(i, total_chunks);
             buffer.write_footer();
@@ -37,9 +31,10 @@ pub fn generate_pages(
         }
 
         for (i, page) in pages.iter().enumerate() {
-            let output_path = build_path
-                .to_owned()
-                .join(INDEX_NAME)
+            let output_path = config
+                .output_path
+                .clone()
+                .join(&config.pages_index_name)
                 .join(sub_dir)
                 .join(format!("{}.html", i + 1));
             std::fs::create_dir_all(output_path.parent().unwrap())
@@ -48,18 +43,23 @@ pub fn generate_pages(
         }
     }
 
-    println!("Generated {} pages in {} subdirectories", page_count, sub_dir_count);
+    println!(
+        "Generated {} pages in {} subdirectories",
+        page_count, sub_dir_count
+    );
 }
 
-struct PageBuffer {
-    sub_dir: String,
+struct PageBuffer<'a> {
+    config: &'a crate::Config,
+    safe_dir: String,
     content: String,
 }
 
-impl PageBuffer {
-    fn new(sub_dir: &str) -> Self {
+impl<'a> PageBuffer<'a> {
+    fn new(config: &'a crate::Config, safe_dir: &str) -> Self {
         PageBuffer {
-            sub_dir: sub_dir.to_string(),
+            config,
+            safe_dir: safe_dir.to_string(),
             content: String::new(),
         }
     }
@@ -84,15 +84,13 @@ impl PageBuffer {
 "#;
     }
 
-    pub fn add_post(&mut self, post: &crate::persistence::PersistentFileInfo) {
-        let safe_title = crate::utils::format_safe_title(&post.title);
+    pub fn add_post(&mut self, title: &str) {
+        let safe_title = crate::utils::format_safe_text(title);
         let link = format!(
             r#"/{}/{}/{}.html"#,
-            crate::ROOT_SUBPATH,
-            self.sub_dir,
-            safe_title
+            self.config.repo_name, self.safe_dir, safe_title
         );
-        let html_content = format!(r#"<p><a href="{}">{}</a></p>"#, link, post.title);
+        let html_content = format!(r#"<p><a href="{}">{}</a></p>"#, link, title);
         self.content.push_str(&html_content);
         self.content.push('\n');
     }
@@ -104,8 +102,10 @@ impl PageBuffer {
 
         if current_page > 0 {
             self.content += &format!(
-                r#"<a href="/{}/{}.html">previous page</a>"#,
-                self.sub_dir,
+                r#"<a href="/{}/{}/{}/{}.html">previous page</a>"#,
+                self.config.repo_name,
+                self.config.pages_index_name,
+                self.safe_dir,
                 current_page - 1
             );
         } else {
@@ -114,14 +114,16 @@ impl PageBuffer {
 
         self.content += r#"<span>, </span>"#;
 
-        self.content += &format!(r#"<a href="{}">github</a>"#, crate::GITHUB_LINK);
-        
+        self.content += &format!(r#"<a href="{}">github</a>"#, self.config.github_link);
+
         self.content += r#"<span>, </span>"#;
 
         if current_page + 1 < total_pages {
             self.content += &format!(
-                r#"<a href="/{}/{}.html">next page</a>"#,
-                self.sub_dir,
+                r#"<a href="/{}/{}/{}/{}.html">next page</a>"#,
+                self.config.repo_name,
+                self.config.pages_index_name,
+                self.safe_dir,
                 current_page + 1
             );
         } else {

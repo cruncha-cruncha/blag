@@ -1,12 +1,11 @@
 pub fn generate_posts(
-    site_path: &std::path::Path,
+    config: &crate::Config,
     tracking_info: &mut crate::persistence::TrackingInfo,
-    build_path: &std::path::Path,
 ) {
     let mut post_count = 0;
     let mut sub_dir_count = 0;
     let mut found_root_file = false;
-    let read_dir = std::fs::read_dir(site_path).expect("Invalid input directory");
+    let read_dir = std::fs::read_dir(&config.input_path).expect("Invalid input directory");
 
     for file in read_dir {
         let file = file.expect("Failed to read file");
@@ -19,10 +18,9 @@ pub fn generate_posts(
             }
 
             let file_data = read_file(&path).expect("Failed to read root markdown file");
-            // let last_updated = tracking_info.track_file(&file_data);
             let last_updated = crate::persistence::get_timestamp();
             let output = compile_full_html(&file_data, last_updated);
-            let output_path = build_path.to_owned().join("index.html");
+            let output_path = config.output_path.clone().join("index.html");
             std::fs::create_dir_all(output_path.parent().unwrap())
                 .expect("Failed to create output directory");
             std::fs::write(output_path, output).expect("Failed to write output file");
@@ -33,10 +31,10 @@ pub fn generate_posts(
                 .file_name()
                 .and_then(|s| s.to_str())
                 .expect("Failed to get subdirectory name");
-            if sub_dir_name == crate::pages::INDEX_NAME {
+            if sub_dir_name == config.pages_index_name {
                 panic!(
-                    "Subdirectory named '{}' found, which conflicts with the pages module.",
-                    crate::pages::INDEX_NAME
+                    "Subdirectory named '{}' found, which conflicts with PAGES_INDEX_NAME.",
+                    config.pages_index_name
                 );
             }
 
@@ -49,7 +47,7 @@ pub fn generate_posts(
                     let file_data = read_file(&sub_path).expect("Failed to read sub markdown file");
                     let last_updated = tracking_info.track_file(&file_data);
                     let output = compile_full_html(&file_data, last_updated);
-                    let output_path = format_output_path(build_path, &file_data);
+                    let output_path = format_output_path(&config.output_path, &file_data);
                     std::fs::create_dir_all(output_path.parent().unwrap())
                         .expect("Failed to create output directory");
                     std::fs::write(output_path, output).expect("Failed to write output file");
@@ -104,10 +102,11 @@ pub fn convert_md_to_html(md: &str) -> String {
 }
 
 fn format_output_path(build_path: &std::path::Path, info: &FileData) -> std::path::PathBuf {
-    let safe_title = crate::utils::format_safe_title(&info.title);
+    let safe_dir = crate::utils::format_safe_text(&info.dir);
+    let safe_title = crate::utils::format_safe_text(&info.title);
     build_path
         .to_owned()
-        .join(&info.dir)
+        .join(&safe_dir)
         .join(format!("{}.html", safe_title))
 }
 

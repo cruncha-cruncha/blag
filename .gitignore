@@ -1,1 +1,5 @@
+# update this to your repo's name, or whatever is in main.rs REPO_NAME (aka what the build directory is called locally)
 blag
+
+# include this to discourage people from calling anything "build": it's used by the github action and assumed to be empty
+build

@@ -1,59 +1,59 @@
 {
   "inklings": {
-    "9WHeTUf/mAnkY6OZ55i4YTQ0yJMMN0z5Iu2iBq0Tudg=": {
-      "title": "Literally Satan",
-      "content_hash": "JVT2uIoAGSHiFMzpdYsUxo+zJuz5YCaZ4Oq0/EHX19w=",
-      "updated_at": 1754049023
-    },
-    "SJYnWFL2u1EXRsuuYKorcIVeJqwdIU52+vqK9D35ZZg=": {
-      "title": "The Rarity of Genius",
-      "content_hash": "/syID95k3QekqK/vZj/+KopTXRz9dphM2czQhWIZZ6o=",
-      "updated_at": 1754049023
-    },
-    "PbQMfy1YDvv3AtiqTtLKGQgDKRSxMl/rd6/nLugt7pg=": {
+    "dead_websites_p2": {
       "title": "Dead Websites p2",
       "content_hash": "PDV+RxMRqc3IeOi0jxA9j/eCLgLN8H20GcSyN5vv3vc=",
-      "updated_at": 1754049023
+      "updated_at": 1754068447
     },
-    "tTnQrLHHy9THOLD6WStt9wDI18omObPQRgymukeUZOk=": {
-      "title": "Alright Alright Alright",
-      "content_hash": "SNP7F7gj2VqAmFYKPZrlD6DYrAUSBv2Y8MC0jdV/Fhs=",
-      "updated_at": 1754049023
-    },
-    "lfUz/fptF/CKLUhaQVMD0W/dgSJtLIdVL9Wth+7Llrs=": {
-      "title": "Brennan Lee Mulligan",
-      "content_hash": "dYrOB4ZBsyAR66OoVv4otiqe15h8y22sRAA07y/d5AY=",
-      "updated_at": 1754049023
-    },
-    "aYXxr/8yJx4zrdeFc1I+Bb8UaUWp9CYdw5LbDqUPO6M=": {
+    "the_rules_you_follow": {
       "title": "the Rules You Follow",
       "content_hash": "43HNqD8i8tBeGywo6WdzBVxfeqUL7yXXqrso+mthIUw=",
-      "updated_at": 1754049023
+      "updated_at": 1754068447
     },
-    "sLnkr7mrFSCo5gGV95fcZZYghq7sY0F79solx2WuxrM=": {
-      "title": "LOC",
-      "content_hash": "6+P7To9sQEMpf8lSCPzX4Y9RXekOsIQub3sjpEGfHTc=",
-      "updated_at": 1754049023
-    },
-    "ZfuqAgmlS2rB0FISErofJca00SCjj1IZEQrqIhn4XNA=": {
-      "title": "The Inside of a Computer is Dumb as Hell but it Goes Like Mad",
-      "content_hash": "Y61SWQDxFv/RnRjxKVGnQ6DUArC//BHHfhW9o76M8DU=",
-      "updated_at": 1754049023
-    },
-    "qqgFFJp+Hqajin0XN3QtlEMx9IdQ06D3haeQWVoBRSU=": {
+    "dead_websites": {
       "title": "Dead Websites",
       "content_hash": "J6O7h6dV5lWpoWnZPhJ+OR7aAm/fxCN7Ov4Q2WxnKpI=",
-      "updated_at": 1754049023
+      "updated_at": 1754068447
     },
-    "s2VUv9CJCNaISLg9hCL9PhZ/Qc5w0bQ1jS7vul5dF7U=": {
-      "title": "Solvable Problems",
-      "content_hash": "2YwDqEghDygBb7zVVUZWIKYE09m/dJeBZXgMWyTawJw=",
-      "updated_at": 1754049023
+    "the_rarity_of_genius": {
+      "title": "The Rarity of Genius",
+      "content_hash": "/syID95k3QekqK/vZj/+KopTXRz9dphM2czQhWIZZ6o=",
+      "updated_at": 1754068447
     },
-    "D5bwbSqpG0vtPP0Spuja9LWU12pc+mC2jx7q/+BhR2E=": {
+    "alright_alright_alright": {
+      "title": "Alright Alright Alright",
+      "content_hash": "SNP7F7gj2VqAmFYKPZrlD6DYrAUSBv2Y8MC0jdV/Fhs=",
+      "updated_at": 1754068447
+    },
+    "loc": {
+      "title": "LOC",
+      "content_hash": "RG9E/FVmH4bAalWWTJS5PzJi4cT0hESX3OcobOLTKQQ=",
+      "updated_at": 1753927475
+    },
+    "literally_satan": {
+      "title": "Literally Satan",
+      "content_hash": "JVT2uIoAGSHiFMzpdYsUxo+zJuz5YCaZ4Oq0/EHX19w=",
+      "updated_at": 1754068447
+    },
+    "the_inside_of_a_computer_is_dumb_as_hell_but_it_goes_like_mad": {
+      "title": "The Inside of a Computer is Dumb as Hell but it Goes Like Mad",
+      "content_hash": "Y61SWQDxFv/RnRjxKVGnQ6DUArC//BHHfhW9o76M8DU=",
+      "updated_at": 1754068447
+    },
+    "true_grit": {
       "title": "True Grit",
       "content_hash": "skUkoLwefQYcb3iS7NMiQukl/I5RCByvR1QQZL2Tazo=",
-      "updated_at": 1754049023
+      "updated_at": 1754068447
+    },
+    "brennan_lee_mulligan": {
+      "title": "Brennan Lee Mulligan",
+      "content_hash": "dYrOB4ZBsyAR66OoVv4otiqe15h8y22sRAA07y/d5AY=",
+      "updated_at": 1754068447
+    },
+    "solvable_problems": {
+      "title": "Solvable Problems",
+      "content_hash": "2YwDqEghDygBb7zVVUZWIKYE09m/dJeBZXgMWyTawJw=",
+      "updated_at": 1754068447
     }
   }
 }

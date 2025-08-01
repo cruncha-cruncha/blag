@@ -27,9 +27,10 @@ FROM gcr.io/distroless/cc AS runtime
 COPY --from=build /blag-compiler/target/release/blag-compiler .
 
 # tell the script where to find things
-ENV SITE_DIR=/blag/site
-ENV BUILD_DIR=/blag/build
-ENV INFO_FILE=/blag_info.json
+ENV INPUT_DIR=/blag/site
+ENV OUTPUT_DIR=/blag/build
+ENV TRACKING_FILE=/blag_info.json
+ENV REPO_NAME=blag
 
 # set the startup command to run your binary
 ENTRYPOINT ["/blag-compiler"]
