@@ -1,77 +1,131 @@
-pub const SUB_DIR: &str = "posts";
-
 pub fn generate_posts(
-    posts_path: &std::path::Path,
-    file_info: &mut crate::persistence::FileInfoMap,
+    site_path: &std::path::Path,
+    tracking_info: &mut crate::persistence::TrackingInfo,
     build_path: &std::path::Path,
 ) {
-    let read_dir = std::fs::read_dir(posts_path).expect("Invalid input directory");
-    let mut seen_files: std::collections::HashSet<String> = std::collections::HashSet::new();
-    let mut count = 0;
+    let mut post_count = 0;
+    let mut sub_dir_count = 0;
+    let mut found_root_file = false;
+    let read_dir = std::fs::read_dir(site_path).expect("Invalid input directory");
 
     for file in read_dir {
-        // make sure it's a markdown file
         let file = file.expect("Failed to read file");
         let path = file.path();
-        if !path.is_file() || path.extension().map_or(false, |ext| ext != "md") {
-            continue;
-        }
-
-        // read and parse file contents
-        let content = std::fs::read_to_string(&path).expect("Failed to read file content");
-        let mut html_content = String::new();
-        let parser = pulldown_cmark::Parser::new(&content);
-        pulldown_cmark::html::push_html(&mut html_content, parser);
-
-        // use filename as title
-        let title = path.file_stem().and_then(|s| s.to_str()).unwrap_or("Post");
-        // mark this file as 'seen', so we can delete unseen (aka deleted) files from file_info later
-        seen_files.insert(title.to_string());
-        // convert title to HTML-safe format
-        let safe_title = format_safe_title(title);
-
-        // get last_updated from file_info, updating it if necessary
-        let last_updated: u64;
-        let content_hash = crate::persistence::hash_content(&content);
-        if let Some(info) = file_info.get_mut(title) {
-            if info.content_hash != content_hash {
-                info.content_hash = content_hash;
-                info.updated_at = crate::persistence::get_timestamp();
-                println!("Post updated: {}", safe_title);
-            }
-            last_updated = info.updated_at;
-        } else {
-            if std::env::var("MODIFIED_AT_OS").is_ok() {
-                last_updated = path.metadata().and_then(|m| m.modified()).map_or_else(
-                    |_| crate::persistence::get_timestamp(),
-                    |t| crate::persistence::system_to_timestamp(t),
-                );
+        if path_is_md(&path) {
+            if found_root_file {
+                panic!("Multiple markdown files found in root directory, expected only one.");
             } else {
-                last_updated = crate::persistence::get_timestamp();
+                found_root_file = true;
             }
-            
-            file_info.insert(
-                title.to_string(),
-                crate::persistence::PersistentFileInfo {
-                    title: title.to_string(),
-                    content_hash: content_hash.clone(),
-                    updated_at: last_updated,
-                },
-            );
 
-            println!("Post created: {}", safe_title);
+            let file_data = read_file(&path).expect("Failed to read root markdown file");
+            // let last_updated = tracking_info.track_file(&file_data);
+            let last_updated = crate::persistence::get_timestamp();
+            let output = compile_full_html(&file_data, last_updated);
+            let output_path = build_path.to_owned().join("index.html");
+            std::fs::create_dir_all(output_path.parent().unwrap())
+                .expect("Failed to create output directory");
+            std::fs::write(output_path, output).expect("Failed to write output file");
+            post_count += 1;
+            sub_dir_count += 1;
+        } else if path.is_dir() {
+            let sub_dir_name = path
+                .file_name()
+                .and_then(|s| s.to_str())
+                .expect("Failed to get subdirectory name");
+            if sub_dir_name == crate::pages::INDEX_NAME {
+                panic!(
+                    "Subdirectory named '{}' found, which conflicts with the pages module.",
+                    crate::pages::INDEX_NAME
+                );
+            }
+
+            let mut has_posts = false;
+            let read_sub_dir = std::fs::read_dir(&path).expect("Failed to read subdirectory");
+            for sub_file in read_sub_dir {
+                let sub_file = sub_file.expect("Failed to read sub-file");
+                let sub_path = sub_file.path();
+                if path_is_md(&sub_path) {
+                    let file_data = read_file(&sub_path).expect("Failed to read sub markdown file");
+                    let last_updated = tracking_info.track_file(&file_data);
+                    let output = compile_full_html(&file_data, last_updated);
+                    let output_path = format_output_path(build_path, &file_data);
+                    std::fs::create_dir_all(output_path.parent().unwrap())
+                        .expect("Failed to create output directory");
+                    std::fs::write(output_path, output).expect("Failed to write output file");
+                    post_count += 1;
+                    has_posts = true;
+                }
+            }
+            if has_posts {
+                sub_dir_count += 1;
+            }
         }
+    }
 
-        // pretty-print last_updated
-        let last_updated = format_datetime(last_updated);
-        let last_updated = format!(
-            r#"<p class="last-updated"><i>last updated: {}<i></p>"#,
-            last_updated
-        );
+    tracking_info.purge_untracked();
+    println!(
+        "Generated {} posts, from {} subdirectories.",
+        post_count, sub_dir_count
+    );
+}
 
-        // generate final HTML content
-        let full_out = format!(
-            r#"
+pub struct FileData {
+    pub dir: String,
+    pub title: String,
+    pub content: String,
+}
+
+fn read_file(path: &std::path::Path) -> Result<FileData, String> {
+    let parent_name = path
+        .parent()
+        .and_then(|p| p.file_name())
+        .and_then(|s| s.to_str())
+        .map(|s| s.to_string())
+        .ok_or("Failed to get parent directory name")?;
+    let title = path
+        .file_stem()
+        .and_then(|s| s.to_str())
+        .map(|s| s.to_string())
+        .ok_or("Failed to parse file title")?;
+    let content = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    Ok(FileData {
+        dir: parent_name,
+        title,
+        content,
+    })
+}
+
+pub fn convert_md_to_html(md: &str) -> String {
+    let mut html_content = String::new();
+    let parser = pulldown_cmark::Parser::new(&md);
+    pulldown_cmark::html::push_html(&mut html_content, parser);
+    html_content
+}
+
+fn format_output_path(build_path: &std::path::Path, info: &FileData) -> std::path::PathBuf {
+    let safe_title = crate::utils::format_safe_title(&info.title);
+    build_path
+        .to_owned()
+        .join(&info.dir)
+        .join(format!("{}.html", safe_title))
+}
+
+fn path_is_md(path: &std::path::Path) -> bool {
+    path.is_file() && path.extension().map_or(false, |ext| ext == "md")
+}
+
+fn compile_full_html(info: &FileData, last_updated: u64) -> String {
+    let html_content = convert_md_to_html(&info.content);
+
+    let last_updated = crate::utils::format_datetime(last_updated);
+    let last_updated = format!(
+        r#"<p class="last-updated"><i>last updated: {}<i></p>"#,
+        last_updated
+    );
+
+    format!(
+        r#"
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -85,48 +139,6 @@ pub fn generate_posts(
     </body>
 </html>
 "#,
-            title, html_content, last_updated
-        );
-
-        // save the HTML content to output directory
-        let output_path = build_path
-            .to_owned()
-            .join(SUB_DIR)
-            .join(format!("{}.html", safe_title));
-        std::fs::create_dir_all(output_path.parent().unwrap())
-            .expect("Failed to create output directory");
-        std::fs::write(output_path, full_out).expect("Failed to write output file");
-        
-        count += 1;
-    }
-
-    // log
-    println!("Generated {} posts", count);
-
-    // remove files from file_info that were not seen in this run
-    file_info.retain(|name, _| seen_files.contains(name));
-}
-
-pub fn format_safe_title(title: &str) -> String {
-    // Use only lowercase letters a–z, digits 0–9, hyphens, and underscores if possible
-    let title = title
-        .to_lowercase()
-        .replace(" ", "_")
-        .replace("/", "_")
-        .replace(":", "_")
-        .replace("?", "_")
-        .replace("!", "_")
-        .replace(".", "_");
-    let re = regex::Regex::new(r"[^a-z0-9_-]").unwrap();
-    let safe_title = re.replace_all(&title, "");
-    safe_title.to_string()
-}
-
-pub fn format_datetime(timestamp: u64) -> String {
-    let sys_time = std::time::SystemTime::UNIX_EPOCH
-        .checked_add(std::time::Duration::from_secs(timestamp))
-        .expect("Timestamp is too large");
-    let datetime: chrono::DateTime<chrono::Local> = sys_time.into();
-    // Month day, Year
-    datetime.format("%B %e, %Y").to_string()
+        &info.title, html_content, last_updated,
+    )
 }
