@@ -1,9 +1,10 @@
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct PersistentFileInfo {
-    // title is here because this struct serves double duty as the source of truth for contstructing pages
+    // title is here because this struct serves double duty as the source of truth for constructing pages
     pub title: String,        // unsafe title of the file
     pub content_hash: String, // base64-encoded sha256
     pub updated_at: u64,      // unix timestamp in seconds
+    pub created_at: u64,      // unix timestamp in seconds
 }
 
 // first key is the (safe) directory, second key is the (safe) title
@@ -94,20 +95,19 @@ impl TrackingInfo {
                     title: file_data.title.clone(),
                     content_hash: crate::persistence::hash_text(&file_data.content),
                     updated_at: now,
+                    created_at: now,
                 });
                 return now;
             }
             std::collections::hash_map::Entry::Occupied(mut entry) => {
-                // If the entry exists, check if the content hash matches
+                // If the entry exists, compare the content hash
                 let new_content_hash = crate::persistence::hash_text(&file_data.content);
                 let file_info = entry.get_mut();
-                if file_info.content_hash == new_content_hash {
-                    return file_info.updated_at; // No change, return existing updated_at
-                } else {
+                if file_info.content_hash != new_content_hash {
                     file_info.content_hash = new_content_hash;
                     file_info.updated_at = now;
-                    return now; // Hash changed, return new updated_at
                 }
+                return file_info.updated_at;
             }
         }
     }

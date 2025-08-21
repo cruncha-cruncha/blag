@@ -9,7 +9,7 @@ pub fn generate_pages(config: &crate::Config, tracking_info: &crate::persistence
         println!("Generating pages for subdirectory: {}", sub_dir);
 
         let mut files = posts.values().cloned().collect::<Vec<_>>();
-        files.sort_by(|a, b| b.updated_at.cmp(&a.updated_at));
+        files.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
         let total_chunks = (files.len() + config.posts_per_page - 1) / config.posts_per_page;
 
