@@ -1,3 +1,43 @@
+# REDO PLANS
+
+- keep the markdown parser
+- simplify folder structure; make the blag more focused; remove subdirectories, and generate a single landing page
+- rename blag_info.json to articles.json, and keep the single articles.json file for coordination, but add a lot to it
+- file name is converted into URL. Title on main page is taken from articles.json (defaults to the file name). Articles will not show up on the main page unless they exist in articles.json and are set to archive: false
+- look into last modified / created at behaviour:
+    - we want to take the created_at time if it exists in articles.json
+    - we want to always check the hash of articles, and update the updated_at time if it doesn't match the hash value in articles.json
+- want to be able to define "tags" in articles.json. Generate a really simple bloom filter for the tags:
+    - split every tag into trigrams; tag `"farming"` becomes `["far", "arm", "rmi", "min", "ing"]`. Tags shorter than 3 letters are ignored lol (with a compile time warning?)
+    - run it through a hash
+    - take the hash mod 1024
+    - unset most of the bits deterministically, using some sort of deterministic sampling algorithm (use fisher-yates shuffle somehow, or 'reservoir'), so we're left with 2 or 3 bits set
+    - 'OR' into a bigint (or a custom data structure?)
+    - save to articles.json so we can use it on the frontend
+- on the frontend, always order articles by date created
+- on the frontend, want a search bar. Can search by title (just look through them lol) or by tag (using the bloom filters)
+- at the bottom of each article, append: date created, date last modified, tags, next article, previous article
+- on the frontend main page, show ten articles at most on a page. Should have 'next' and 'previous' buttons, as well as a link to my github.
+- want the main page to read search and page number from URL search params
+- layout of main page:
+```
+       Bug Blog <link to github> <link to legal disclaimer?>
+       [search bar (no button)]
+date - article title
+date - article title
+date - article title
+       <prev> <next>
+```
+- favicon.ico
+
+
+Use a bloom filter 2048 bits large, with two hash functions (k = 2), then we can store around 500 elements before the error rate goes above 5%. For the hash functions, actually use a single SHA1. First 11 bits (2^11 = 2048) -> first k, second 11 bits -> second k. Do all this in JS using bigint and subtle crypto, then store in localstorage or indexdb so we don't have to re-compute.
+
+use TFIDF term frequency inverse document frequency?
+
+instead of fetching articles.json, could build it into the html directly
+
+
 # Compiler
 
 High level:
