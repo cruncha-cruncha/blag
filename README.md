@@ -1,5 +1,7 @@
 # Bug Blog
 
+[https://cruncha-cruncha.github.io/blag/](https://cruncha-cruncha.github.io/blag/)
+
 Simple static site generator, with search
 
 ## Future improvements
