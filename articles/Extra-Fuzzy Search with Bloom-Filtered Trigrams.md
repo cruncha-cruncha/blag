@@ -131,7 +131,7 @@ This hack greatly increases the imprecision of our search. In fact it could easi
 
 ## What Have We Done
 
-I'm not sure. Jabberin on is all well and good but the proof of the puddin is in the eatin. Let's run some tests, comparing a correct bloom filter (2048 bits, 2 hashes, varying article keys and search terms) to our hacky implementation. [Code here](/blag/support/extra-fuzzy).
+I'm not sure. Jabberin on is all well and good but the proof of the puddin is in the eatin. Let's run some tests, comparing a correct bloom filter (2048 bits, 2 hashes, varying article keys and search terms) to our hacky implementation. [Code here](https://github.com/cruncha-cruncha/blag/tree/main/support/extra-fuzzy).
 
 Some results are below. The column headings (3, 4, 5, 6, ...) indicate to search term length. The row headings (34, 35, 36, 119, ...) indicate 'article text' length (aka how much text is in the bloom filter). The values represent the Kendall tau distance between the correct ranking and our hacky ranking (lower is more similar, max difference is 1000).
 
