@@ -91,11 +91,24 @@ impl Articles {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="UTF-8">
         <title>{}</title>
+        <style>
+            table {{
+                border-collapse: collapse;
+                width: 100%;
+            }}
+            th, td {{
+                border: 1px solid #ddd;
+                text-align: right;
+                padding: 8px; /* Adds spacing between columns */
+            }}
+        </style>
     </head>
     <body>
-        {}
-        {}
-        {}
+        <div style="max-width:800px;margin-left:auto;margin-right:auto;">
+            {}
+            {}
+            {}
+        </div>
     </body>
 </html>
 "#,

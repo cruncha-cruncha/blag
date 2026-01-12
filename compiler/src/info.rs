@@ -227,7 +227,7 @@ impl InfoWrangler {
     pub fn sort_created_at(&mut self) {
         self.info_file
             .articles
-            .sort_by(|a, b| a.created_at.cmp(&b.created_at));
+            .sort_by(|a, b| b.created_at.cmp(&a.created_at));
     }
 
     pub fn sort_alphabetical(&mut self) {

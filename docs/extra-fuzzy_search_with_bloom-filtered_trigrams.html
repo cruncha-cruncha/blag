@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <title>Extra-Fuzzy Search with Bloom-Filtered Trigrams</title>
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                text-align: right;
+                padding: 8px; /* Adds spacing between columns */
+            }
+        </style>
+    </head>
+    <body>
+        <div style="max-width:800px;margin-left:auto;margin-right:auto;">
+            <h1>Extra-Fuzzy Search with Bloom-Filtered Trigrams</h1>
+<h2>Problem</h2>
+<p>I want to be able to search for articles on this site. The search needs to work without querying a server (so I can serve the site using Github Pages); so it needs to be small and fast. I want it to be tolerant of typos and misspellings; so searching for <code>chryssanthamun</code> will work almost as well as the correct <code>chrysanthemum</code>. This means it needs to support 'fuzzy string matching'. I don't care about must-include, exclude, or exactly-match some term.</p>
+<h2>What Are Bloom Filters?</h2>
+<h3>Disaster!</h3>
+<p>Let's start with a little story. Paula has a large collection of jig saw puzzles, each in their own box. Every box has a picture of the completed puzzle on it's front.</p>
+<p>One day, Paula's house is hit by an earthquake and all her puzzle boxes fall onto the floor. Horrifically, they pop open and the puzzle pieces mix together. Paula quickly writes a computer program to help her sort the pieces back into their correct boxes. It works something like this:</p>
+<p>Paula holds up a random puzzle piece in front of her webcam. The program compares this tiny little piece to each picture on the front of every puzzle box, and then indicates which boxes the puzzle piece could have come from, and which boxes the puzzle piece definitely could not have come from.</p>
+<p>The program is treating every puzzle box like a <em>bloom filter</em>. It takes a large amount of information (the picture on the front of the box), and allows Paula to search that information for a specific matching element (a tiny portion of the image displayed on the puzzle piece).</p>
+<p>Because both bloom filters and this metaphor are a little bit stupid, the program doesn't tell Paula precisely <em>where</em> a piece fits into a picture, only that it's about 95% certain that it could.</p>
+<h3>Brass Tacks</h3>
+<p>Let's move past theory and on to practice. Allocate M bits and set them all to zero initially; this will become your bloom filter. Take some text document, split it into words (aka tokens). Run each word through hash function K1, take the result mod M, then set that bit in the bloom filter to one. Run each word through hash funtion K2, take the result mod M, then set that bit in the bloom filter.</p>
+<p>We have in effect mapped every unique token T to exactly two bits in the bloom filter. Let's M is 256 and one token is 'dog', and further <code>K1('dog') % 256 = 19</code> and <code>K2('dog') % 256 = 108</code>. Then we can be sure that the 19th and 108th bit of the bloom filter are set to one. Let's say another token in 'cat', and further <code>K1('cat') % 256 = 72</code> and <code>K2('cat') % 256 = 108</code>. Uh oh! The two distinct tokens 'dog' and 'cat' both map to bit 108! That's ok because their other bit differs, and some overlap is to be expected.</p>
+<p>(What's probably obvious, but I feel important to mention, is that the original filter is created using hash function K1 and K2, and any searches on the resulting filter also use K1 and K2. A good hash function is uniform, so 'dog' and 'dot' will produce wildly different hashes. The selection of K1 and K2 are important; they must be fast, and capable of handling whatever keys we throw at them. Bloom filters may also use K3, K4, K5, etc. depending on the problem.)</p>
+<p>There are various equations that relate filter size M, number of hash functions k (aka how many bits are used to represent each token), expected tokens N, and desired false positive rate P. A false positive occurs if we search the bloom filter for 'bird', and it so happens that <code>K1('bird') % 256 = 19</code> and <code>K2('bird') % 256 = 72</code>. So although 'bird' was not in our original document, it is covered by the bloom filter (aka both of it's bits just happen to be set). This is why bloom filters can only indicate two levels of membership: definitely excluded, or maybe included.</p>
+<p>Assume bloom filter F was created from a set of tokens D. Given a search token R, using bloom filter F can indicate to us that exactly one of the following is true:</p>
+<ul>
+<li>set D definitely does not contain element R</li>
+<li>set D may contain element R</li>
+</ul>
+<p>If we want the bloom filter to be useful, we should make it large enough so that 'may contain' is reasonably certain. Paula's program was about 95% certain that a puzzle piece belonged to a certain box, or a roughly 5% false positive rate (per box). Later on we will play with filter size M and key functions k to see how they interact with false positive rate P and expected tokens N.</p>
+<h2>Trigrams</h2>
+<p>Leaving bloom filters for a moment, enter the world of trigrams. This just means three symbols in sequence; 'abc' is a trigram, so is 'dog', so is 'cat', and so is '$_#' (symbols don't have to be letters). There are also bigrams like 'th', 'ui', and 'aa'. Bigrams and trigrams are both specific classes of n-grams, which just means n symbols in sequence.</p>
+<p>If two words have a lot of trigrams in common, they are probably similar words. This approximation gets better when the word is longer, or if we use entire phrases instead of words; <code>the quick grey fox</code> shares a lot of trigrams with <code>the quick brown fox</code> (like <code>['the', 'he ', 'e q', ' qu', ...]</code>). They're not infallible, but they are simple to calculate.</p>
+<p>There are many 'fuzzy string matching' algorithms, for instance:</p>
+<ul>
+<li>
+<p>Levenshtein distance: how many single-symbol swaps are required to change word X into word Y? For instance 'dog' requires three swaps to turn into 'cat', but only 1 to turn into 'dot'. Various other approaches also consider swapping letters, and finding common substrings. This approach can be classified as finding and ranking an 'edit distance' between two words / groups of symbols.</p>
+</li>
+<li>
+<p>Soundex: convert words into a simplified form using a 'phonetic algorithm'. For example 'dog' becomes 'D200', 'cat' becomes 'C300', 'chrysanthemum' becomes 'C625', and 'chryssanthamun' becomes 'C625' (using some version of Soundex I found <a href="https://onlinephp.io/soundex">here</a>). There are several versions of the Soundex algorithm, as well as other approaches to phonetic algorithms (like Metaphone). They are usually language-dependent; one implementation may work well for english but not for french.</p>
+</li>
+</ul>
+<p>But let's not get carried away.</p>
+<h2>All Together Now</h2>
+<p>We have trigrams (which can be used to calculate the similarity between two sequences of symbols) and bloom filters (which can be used to encode a large number of tokens, for later search). So if we want to search some text (like a blog article), all we have to do is:</p>
+<ol>
+<li>break down the text into trigrams</li>
+<li>create a bloom filter from those trigrams</li>
+</ol>
+<p>As an example: let's say our text is <code>the quick brown fox</code>, and we want to search for <code>brooms</code>. First we split the larger phrase into trigrams and use it to create a bloom filter. Then we split <code>brooms</code> into <code>['bro', 'roo', 'oom', 'oms']</code>, and count how many of these show up in the bloom filter; only one of them ('bro', assuming there are no false positives). So our score for matching <code>the quick brown fox</code> (our blog article) to <code>brooms</code> (our search term) is 1.</p>
+<p>Continuing the example, we have another blog article with the text <code>sweepers may use a broom</code>. This text will have a score of 3 ('bro', 'roo', and 'oom'). It does not match the fourth trigram 'oms'. There is yet another article with text <code>some broken rooms are blue</code>. This one gets a score of 4, because the big text contains 'bro' from 'broken', then 'roo', 'oom', and 'oms' from 'rooms'. So our resulting order of articles, when searching for <code>brooms</code> and ranking by our similarity score, would look like:</p>
+<ol start="4">
+<li>"some broken rooms are blue"</li>
+<li>"sweepers may use a broom"</li>
+<li>"the quick brown fox"</li>
+</ol>
+<p>Which is pretty weird. There's also a big caveat of 'assuming there are no false positives'. How many trigrams can we shove into a bloom filter?</p>
+<h3>Math</h3>
+<p>Let's say we have a 10,000 word article. We can break that up into 99,998 trigrams. After removing duplicate trigrams (there is no need for them because they will hash to the same thing when creating the bloom filter (one of the many drawbacks of a bloom filter is that it can't count; only indicate whether definitely excluded or maybe included)) we end up with ~80,000, but lets round that back up to 10,000 (aim high). We have 10,000 trigrams, aka 10,000 elements for our bloom filter, so our expected number of tokens N is 10,000.</p>
+<p>We want no more than a 5% false positive rate P. We punch that into some formula like <code>M = - (N * ln(P)) / (ln(2) ^ 2)</code> and discover that the bloom filter should be around 62,417 bits, round up to 8 kb. Using another formula, we discover that the optimal k (number of hash functions / bits per element) is roughly 4.33, (round down to 4) but it doesn't matter, because 8kb is too big.</p>
+<p>Bloom filters are powerful because they scale linearly with the expected number of tokens, no matter how many tokens there are. But I want this search to be really really small; smaller than 8kb per document. Unfortunately this means reduceing the number of expected tokens.</p>
+<p>Actually, let's attack this from the other side. I want each bloom filter to be no larger than 2048 bits (using a power of two allows us to optimize the mapping of hash function result -&gt; bit position, more later). At a 5% false positive rate, that means two hash functions (k = 2) and around 500 expected elements (N = 5).</p>
+<p>This means that we can't add an entire document to the bloom filter unless the document is very small. That's ok. Let's add the document's title, and whatever tags we want to define. You can see document tags at the bottom of this article.</p>
+<h2>Optimization</h2>
+<h3>Whitespace is a Waste</h3>
+<p>We really want to maximize the number of trigrams (tokens / elements) that are stored in each bloom filter. Trigrams are powerful because they can link words, <code>the quick brown fox</code> contains trigrams <code>['e_q', 'k_b', 'n_f']</code>. In a very small way, this encodes the sequence of words; searching for <code>brown fox</code> will score higher than <code>fox brown</code> because of the matching 'n_f' vs non-matching 'x_b'.</p>
+<p>This concept works even better if spaces are removed. We can squash <code>the quick brown fox</code> down to <code>thequickbrownfox</code>. Now there are two trigrams of overlap between each original word: <code>['heq', 'equ', 'ckb', 'kbr', ...]</code>. There is no guarantee that these won't show up inside a word (like in 'equality' for instance), but removing whitespace also means fewer trigrams to process overall (faster).</p>
+<p>As implemented, all non-alphanumeric symbols are stripped from the text before it's converted into trigrams, and all letters are lowercased. This made it easier to reason about the elements: there are only 36 symbols, so 36^3 possible trigrams. In the end this didn't matter, but I kept the squashing anyway because it's fun.</p>
+<h3>One Hash Becomes Two</h3>
+<p>Instead of using two different hash functions K1 and K2, we can use a single hash function K and leverage different bits of it's output to simulate K1 and K2.</p>
+<p>For example, SHA1 produces 160 bits. Our bloom filter is 2048 bits which is 2^11, so we only need 11 bits to identify a single bit in the bloom filter. The first 11 bits correspond to K1 mod M, and the second 11 bits correspond to K2 mod M.</p>
+<pre><code>const hash = SHA1(&lt;some token&gt;);
+const k1_position = hash % 2048;
+const k2_position = (hash &gt;&gt; 11) % 2048;
+</code></pre>
+<p>This is a lot faster than using two hash functions (which tend to be computationally expensive), and doesn't lose any 'randomness'.</p>
+<p>As an aside, the choice of k is very important; too many bits per element and the bloom filter will become saturated prematurely. Too few, and the bloom filter is not discriminant enough? I'm not entirely sure, but either way it leads to false positives. More experimentation is required.</p>
+<h3>Hacks</h3>
+<p>Let's recap a little bit. We start by processing each article:</p>
+<ul>
+<li>squash the article's title and tags</li>
+<li>break the squashed text into trigrams</li>
+<li>hash each trigram, build the bloom filter</li>
+</ul>
+<p>Later on, we can search these articles:</p>
+<ul>
+<li>squash the search term</li>
+<li>break the squashed text into trigrams</li>
+<li>hash each trigram</li>
+<li>compare every trigram against every bloom filter</li>
+</ul>
+<p>Articles are ranked by their score. Score is calculated by the number of matching trigrams from the search term. For example, if the search term is <code>bagel</code>, it's split into <code>['bag', 'age', 'gel']</code>. One article is called <code>Baggage Claims</code> and another is called <code>Zebra Stripes</code>. The first article will get a score of 2 because it matches two trigrams: <code>['bag', 'age']</code>. The first article will get a score of 0 because it matches zero trigrams (assuming no false positives). The first article will be ranked higher than the second.</p>
+<p>Trigram ranking, at the best of times, results in fairly approximate results if the search term is small. Let's see if we can't make that worse.</p>
+<p>The problem is 'compare every trigram against every bloom filter'. This is big O(mn), where m is the number of trigrams in the search term and n is the number of articles to search. Let's completely abuse the bloom filter, and get it down to O(n). Instead of matching on both K1 and K2, let's just create a new bloom filter from the search term trigrams then count the number of matching bits between it and every article.</p>
+<p>Let's suppose our search term is <code>fruity</code>. Using our previous (correct) method, an article could score at most 4 (because 'fruity' is split into four trigrams). Using our new (hacky) scoring method, an article could score at most 8 (because each trigram is mapped to two bits).</p>
+<p>This hack greatly increases the imprecision of our search. In fact it could easily descend into randomness. As long as the bloom filters are fairly sparse, it shouldn't get too bad though. And it runs in O(m) time.</p>
+<h2>What Have We Done</h2>
+<p>I'm not sure. Jabberin on is all well and good but the proof of the puddin is in the eatin. Let's run some tests, comparing a correct bloom filter (2048 bits, 2 hashes, varying article keys and search terms) to our hacky implementation. <a href="/support/extra-fuzzy">Code here</a>.</p>
+<p>Some results are below. The column headings (3, 4, 5, 6, ...) indicate to search term length. The row headings (34, 35, 36, 119, ...) indicate 'article text' length (aka how much text is in the bloom filter). The values represent the Kendall tau distance between the correct ranking and our hacky ranking (lower is more similar, max difference is 1000).</p>
+<table>
+<tbody>
+<tr>
+<td></td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>16</td>
+<td>32</td>
+</tr>
+<tr>
+<td>34</td>
+<td>39</td>
+<td>56</td>
+<td>61</td>
+<td>87</td>
+<td>99</td>
+<td>109</td>
+<td>115</td>
+<td>129</td>
+<td>152</td>
+<td>190</td>
+</tr>
+<tr>
+<td>35</td>
+<td>30</td>
+<td>59</td>
+<td>80</td>
+<td>84</td>
+<td>99</td>
+<td>109</td>
+<td>123</td>
+<td>128</td>
+<td>165</td>
+<td>181</td>
+</tr>
+<tr>
+<td>36</td>
+<td>34</td>
+<td>55</td>
+<td>62</td>
+<td>80</td>
+<td>93</td>
+<td>114</td>
+<td>121</td>
+<td>136</td>
+<td>157</td>
+<td>184</td>
+</tr>
+<tr>
+<td>119</td>
+<td>24</td>
+<td>72</td>
+<td>106</td>
+<td>136</td>
+<td>145</td>
+<td>172</td>
+<td>190</td>
+<td>181</td>
+<td>202</td>
+<td>219</td>
+</tr>
+<tr>
+<td>120</td>
+<td>33</td>
+<td>66</td>
+<td>114</td>
+<td>129</td>
+<td>156</td>
+<td>151</td>
+<td>169</td>
+<td>173</td>
+<td>190</td>
+<td>213</td>
+</tr>
+<tr>
+<td>121</td>
+<td>25</td>
+<td>75</td>
+<td>112</td>
+<td>133</td>
+<td>149</td>
+<td>171</td>
+<td>172</td>
+<td>181</td>
+<td>205</td>
+<td>227</td>
+</tr>
+<tr>
+<td>249</td>
+<td>10</td>
+<td>66</td>
+<td>112</td>
+<td>141</td>
+<td>150</td>
+<td>177</td>
+<td>176</td>
+<td>190</td>
+<td>234</td>
+<td>226</td>
+</tr>
+<tr>
+<td>250</td>
+<td>16</td>
+<td>64</td>
+<td>105</td>
+<td>135</td>
+<td>162</td>
+<td>177</td>
+<td>187</td>
+<td>190</td>
+<td>227</td>
+<td>241</td>
+</tr>
+<tr>
+<td>251</td>
+<td>14</td>
+<td>59</td>
+<td>110</td>
+<td>131</td>
+<td>164</td>
+<td>168</td>
+<td>181</td>
+<td>195</td>
+<td>221</td>
+<td>241</td>
+</tr>
+<tr>
+<td>399</td>
+<td>8</td>
+<td>36</td>
+<td>79</td>
+<td>128</td>
+<td>143</td>
+<td>162</td>
+<td>184</td>
+<td>197</td>
+<td>211</td>
+<td>240</td>
+</tr>
+<tr>
+<td>400</td>
+<td>5</td>
+<td>42</td>
+<td>92</td>
+<td>108</td>
+<td>137</td>
+<td>158</td>
+<td>180</td>
+<td>183</td>
+<td>220</td>
+<td>232</td>
+</tr>
+<tr>
+<td>401</td>
+<td>7</td>
+<td>45</td>
+<td>76</td>
+<td>111</td>
+<td>135</td>
+<td>173</td>
+<td>182</td>
+<td>202</td>
+<td>215</td>
+<td>241</td>
+</tr>
+</tbody>
+</table>
+<p>Average distance across all cells: 133.53. This is only comparing the top ten ranked articles, so while we're at it let's look at more average distances. This time the column headers (1,2,3) are k values (how many hashes), and the row headers (2, 5, 10, 20) are comparing the top n ranked articles. The value in cell k = 2, n = 10 is 133.53 from above.</p>
+<table>
+<tbody>
+<tr>
+<td></td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>113.29</td>
+<td>98.33</td>
+<td>146.83</td>
+</tr>
+<tr>
+<td>5</td>
+<td>131.43</td>
+<td>119.28</td>
+<td>176.28</td>
+</tr>
+<tr>
+<td>10</td>
+<td>142.91</td>
+<td>133.53</td>
+<td>187.28</td>
+</tr>
+<tr>
+<td>20</td>
+<td>147.40</td>
+<td>144.18</td>
+<td>196.46</td>
+</tr>
+</tbody>
+</table>
+<p>Together, these two tables indicate that our hacky solution performs best when k = 2, the search term is small (although this is probably because both rankings are equally incorrect), and the article text length is longer. When k = 2, the top two results are pretty consistent between the correct solution and our hacky solution.</p>
+<p>Good enough for me!</p>
+
+            <p class="tags"><i>tags</i>: <span class="tag">hashing</span> <span class="tag">linear</span> <span class="tag">n-grams</span> <span class="tag">strings</span> <span class="tag">text</span> <span class="tag">hacky</span> <span class="tag">sloppy</span> <span class="tag">bug blog</span></p>
+            <p class="last-updated"><i>last updated</i>: January 11, 2026</p>
+        </div>
+    </body>
+</html>

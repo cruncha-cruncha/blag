@@ -65,11 +65,12 @@ impl IndexHtml {
         }}
 
         // 'djb2' hash function, specifically for trigrams
+        // idk if this is right or not but it seems to work
         const djb2tri = (tri) => {{
             let h = 5381;
-            h = ((h << 5) + h) ^ tri.charCodeAt(0);
-            h = ((h << 5) + h) ^ tri.charCodeAt(1);
-            h = ((h << 5) + h) ^ tri.charCodeAt(2);
+            for (let i = 0; i < 33; i++) {{
+                h = ((h << 5) + h) ^ tri.charCodeAt(i%3);
+            }}
             return Math.abs(h);
         }}
 
@@ -170,6 +171,10 @@ impl IndexHtml {
                 }}
             }}
 
+            // assume that data.articles is pre-sorted by createdAt desc
+            // the above for loop scores each article in order, and the below Array.sort is stable
+            // so articles with the same score will remain in createdAt desc order
+
             articleScores.sort((a, b) => b.score - a.score);
             articleScores = articleScores.slice(data.pageNum * pageSize, (data.pageNum + 1) * pageSize);
             data.results = articleScores.map(as => data.articles[as.index]);
@@ -243,21 +248,21 @@ impl IndexHtml {
 </head>
 
 <body>
-    <div style="display:grid;grid-template-columns:max-content auto;column-gap:0.6rem;">
+    <div style="max-width:800px;margin-left:auto;margin-right:auto;display:grid;grid-template-columns:max-content auto;column-gap:0.6rem;">
         <!-- cheeky lil spacer to align dates -->
         <span style="visibility:hidden;">2020-01-01-</span>
         <div style="margin-bottom:1rem;">
             <h1 style="margin:0;">Bug Blog</h1>
             <input id="search-bar" type="text" name="search" placeholder="search" oninput="handleSearchInput(event)">
         </div>
-        <div id="articles" style="display:grid;grid-template-columns:subgrid;grid-column:1/-1;row-gap:0.2rem;">
+        <div id="articles" style="display:grid;grid-template-columns:subgrid;grid-column:1/-1;row-gap:0.4rem;">
         </div>
         <div style="grid-column:2;margin-top:0.8rem;display:flex;gap:1rem;align-items:center;">
             <button id="prev" onclick="handlePrevClick()">prev</button>
             <span id="page-num">1</span>
             <button id="next" onclick="handleNextClick()">next</button>
         </div>
-        <a href="random" style="grid-column:2;margin-top:0.6rem;">source</a>
+        <a href="https://github.com/cruncha-cruncha/blag" style="grid-column:2;margin-top:0.6rem;">source</a>
     </div>
 </body>
 

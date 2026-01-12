@@ -1,12 +1,21 @@
 {
   "articles": [
     {
-      "original_filename": "Alright Alright Alright",
-      "safe_filename": "alright_alright_alright",
-      "created_at": 1767470808,
-      "updated_at": 1767470818,
-      "content_hash": "SNP7F7gj2VqAmFYKPZrlD6DYrAUSBv2Y8MC0jdV/Fhs=",
-      "tags": []
+      "original_filename": "Extra-Fuzzy Search with Bloom-Filtered Trigrams",
+      "safe_filename": "extra-fuzzy_search_with_bloom-filtered_trigrams",
+      "created_at": 1767646164,
+      "updated_at": 1768179022,
+      "content_hash": "lGV6bX3k1fhZf/63EOMYIKFQy9re3ENUAyksc1GK3BA=",
+      "tags": [
+        "hashing",
+        "linear",
+        "n-grams",
+        "strings",
+        "text",
+        "hacky",
+        "sloppy",
+        "bug blog"
+      ]
     }
   ]
 }

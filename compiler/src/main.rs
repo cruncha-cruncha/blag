@@ -39,6 +39,8 @@ fn run(upsert_only: bool) {
         info_wrangler.upsert(path);
     }
 
+    // TODO: clean the info file of articles that no longer exist?
+
     if upsert_only {
         info_wrangler.save();
         println!("done!");
