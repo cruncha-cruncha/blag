@@ -106,7 +106,7 @@ const k2_position = (hash &gt;&gt; 11) % 2048;
 <p>Let's suppose our search term is <code>fruity</code>. Using our previous (correct) method, an article could score at most 4 (because 'fruity' is split into four trigrams). Using our new (hacky) scoring method, an article could score at most 8 (because each trigram is mapped to two bits).</p>
 <p>This hack greatly increases the imprecision of our search. In fact it could easily descend into randomness. As long as the bloom filters are fairly sparse, it shouldn't get too bad though. And it runs in O(m) time.</p>
 <h2>What Have We Done</h2>
-<p>I'm not sure. Jabberin on is all well and good but the proof of the puddin is in the eatin. Let's run some tests, comparing a correct bloom filter (2048 bits, 2 hashes, varying article keys and search terms) to our hacky implementation. <a href="/support/extra-fuzzy">Code here</a>.</p>
+<p>I'm not sure. Jabberin on is all well and good but the proof of the puddin is in the eatin. Let's run some tests, comparing a correct bloom filter (2048 bits, 2 hashes, varying article keys and search terms) to our hacky implementation. <a href="/blag/support/extra-fuzzy">Code here</a>.</p>
 <p>Some results are below. The column headings (3, 4, 5, 6, ...) indicate to search term length. The row headings (34, 35, 36, 119, ...) indicate 'article text' length (aka how much text is in the bloom filter). The values represent the Kendall tau distance between the correct ranking and our hacky ranking (lower is more similar, max difference is 1000).</p>
 <table>
 <tbody>

@@ -141,7 +141,7 @@ impl IndexHtml {
                 articlesDiv.appendChild(dateSpan);
 
                 const titleLink = document.createElement("a");
-                titleLink.href = `/${{article.safeTitle}}.html`;
+                titleLink.href = `/blag/${{article.safeTitle}}.html`;
                 titleLink.textContent = article.originalTitle;
                 articlesDiv.appendChild(titleLink);
             }});
