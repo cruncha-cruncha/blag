@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <title>How Many Bananas is Juno Allowed to Eat</title>
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                text-align: right;
+                padding: 8px; /* Adds spacing between columns */
+            }
+        </style>
+    </head>
+    <body>
+        <div style="max-width:800px;margin-left:auto;margin-right:auto;">
+            <h1>How Many Bananas is Juno Allowed to Eat?</h1>
+<p>There are only two hard problems in computer science: naming things, and cache invalidation.</p>
+<p>We have several monkeys at the zoo, and all of them like to eat bananas. They would eat bananas all day if they could, so we keep track of how many they're allowed. We have a <code>Banana</code> service for that. To check how many bananas Juno is allowed to eat, we call <code>GET /bananas/juno</code>. To check how many bananas Marjorie is allowed to eat, we call <code>GET /bananas/marjorie</code>.</p>
+<p>Some monkeys are allowed access to the secret forest. Some monkeys are allowed to eat cherries. Some monkeys are known to throw poo at visitors. We track it all at the zoo, and can conveniently fetch all monkey-related parameters through the <code>Wrapper</code> service, by calling <code>GET /wrapped/juno</code> for instance. This will return all the information we have on Juno. So instead of the zoo computer making several different calls to get banana limits, secret forest access, cherry limits, and poop complaints, it just makes one call to the bundler. Internally, the <code>Wrapper</code> service makes calls to a bunch of other services, including the <code>Banana</code> service.</p>
+<p>One day, my colleague lowered the amount of bananas that Juno was allowed to eat (per day) from ten to nine, but when they refreshed the page it seemed like the change didn't go through; it still indicated that Juno was allowed to eat ten bananas. After a couple more attempts, finally the page updated to show nine bananas. We decided to investigate.</p>
+<h2>Replication</h2>
+<p>It is known that both services cache their results for faster response times and to alleviate load on the database, and that cached values expire in five minutes if not invalidated sooner. Juno's banana limit is currently ten. Start by doing nothing for at least five minutes, then:</p>
+<ol start="0">
+<li>
+<p>Call <code>GET /bananas/juno</code>, then start a stopwatch.</p>
+</li>
+<li>
+<p>At minute one, keep waiting.</p>
+</li>
+<li>
+<p>At two minutes, update Juno's banana limit from ten to nine, then call <code>GET /wrapped/juno</code>.</p>
+</li>
+<li>
+<p>At three minutes, call <code>GET /bananas/juno</code> and note the result as <em>B1</em>.</p>
+</li>
+<li>
+<p>At four minutes, keep waiting.</p>
+</li>
+<li>
+<p>Just after five minutes, update Juno's banana limit from nine to eight. Call <code>GET /wrapped/juno</code> and note the result as <em>W1</em>.</p>
+</li>
+</ol>
+<p>The <code>Banana</code> and <code>Wrapper</code> caches are 'good' if their invalidation is working correctly, and 'bad' if not. Good caches will invalidate when Juno's banana limit changes. Bad caches will hold onto their value for five minutes after an initial call, no matter how Juno's banana limit changes. The table below summarizes all possible states of the two caches, and how the results would look.</p>
+<table>
+<tbody>
+<tr>
+<td><code>Banana</code></td>
+<td><code>Wrapper</code></td>
+<td><em>B1</em></td>
+<td><em>W1</em></td>
+</tr>
+<tr>
+<td>good</td>
+<td>good</td>
+<td>9</td>
+<td>8</td>
+</tr>
+<tr>
+<td>good</td>
+<td>bad</td>
+<td>9</td>
+<td>9</td>
+</tr>
+<tr>
+<td>bad</td>
+<td>good</td>
+<td>10</td>
+<td>8</td>
+</tr>
+<tr>
+<td>bad</td>
+<td>bad</td>
+<td>10</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>During testing it was found that <em>B1</em> = 10 and <em>W1</em> = 10, so both caches are bad. Let's walk through how we got here:</p>
+<ol start="0">
+<li>
+<p>We waited at least five minutes before this, so there's nothing cached yet. Calling <code>GET /bananas/juno</code> causes <code>Banana</code> to cache Juno's current banana limit of ten.</p>
+</li>
+<li>
+<p>We wait.</p>
+</li>
+<li>
+<p>Updating Juno's banana limit from ten to nine should invalidate both caches, but it doesn't. Calling <code>GET /wrapped/juno</code> will in turn call <code>GET /bananas/juno</code>, which responds with it's cached (and not invalidated) value of 'ten'. <code>Wrapper</code> will dutifully cache this value now. Both services have now cached a value, and both are incorrect. <code>Banana</code>'s cached value expires in three minutes, while <code>Wrapper</code>'s cached value will expire in five minutes (because it just got called).</p>
+</li>
+<li>
+<p>When called, <code>Banana</code> returns it's cached value 'ten'. This is <em>B1</em>.</p>
+</li>
+<li>
+<p>We wait.</p>
+</li>
+<li>
+<p><code>Banana</code>'s cached value has now expired; if called, <code>Banana</code> would go to the database and return a value of 'eight'. Instead we call <code>Wrapper</code>, and it returns it's cached (and not invalidated) value of ten.</p>
+</li>
+</ol>
+<p>Luckily, fixes were quickly implemented for both services.</p>
+
+            <p class="tags"><i>tags</i>: <span class="tag">caching</span> <span class="tag">invalidation</span> <span class="tag">zoo</span> <span class="tag">monkeys</span> <span class="tag">wrapper</span></p>
+            <p class="last-updated"><i>last updated</i>: January 18, 2026</p>
+        </div>
+    </body>
+</html>

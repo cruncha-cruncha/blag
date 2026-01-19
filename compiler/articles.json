@@ -16,6 +16,20 @@
         "sloppy",
         "bug blog"
       ]
+    },
+    {
+      "original_filename": "How Many Bananas is Juno Allowed to Eat",
+      "safe_filename": "how_many_bananas_is_juno_allowed_to_eat",
+      "created_at": 1768786736,
+      "updated_at": 1768786934,
+      "content_hash": "PrJVG8DFoBPELTUmXfdkk8/N/DWu82ilCnj3RpNew3I=",
+      "tags": [
+        "caching",
+        "invalidation",
+        "zoo",
+        "monkeys",
+        "wrapper"
+      ]
     }
   ]
 }
