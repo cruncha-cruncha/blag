@@ -45,6 +45,7 @@
 <p>Just after five minutes, update Juno's banana limit from nine to eight. Call <code>GET /wrapped/juno</code> and note the result as <em>W1</em>.</p>
 </li>
 </ol>
+<p>Of course it would be easier to debug if we had direct access to the caching infrastructure, but unfortunately that wasn't the case.</p>
 <p>The <code>Banana</code> and <code>Wrapper</code> caches are 'good' if their invalidation is working correctly, and 'bad' if not. Good caches will invalidate when Juno's banana limit changes. Bad caches will hold onto their value for five minutes after an initial call, no matter how Juno's banana limit changes. The table below summarizes all possible states of the two caches, and how the results would look.</p>
 <table>
 <tbody>
@@ -104,7 +105,7 @@
 <p>Luckily, fixes were quickly implemented for both services.</p>
 
             <p class="tags"><i>tags</i>: <span class="tag">caching</span> <span class="tag">invalidation</span> <span class="tag">zoo</span> <span class="tag">monkeys</span> <span class="tag">wrapper</span></p>
-            <p class="last-updated"><i>last updated</i>: January 18, 2026</p>
+            <p class="last-updated"><i>last updated</i>: January 19, 2026</p>
         </div>
     </body>
 </html>

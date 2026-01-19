@@ -24,6 +24,8 @@ It is known that both services cache their results for faster response times and
 
 5. Just after five minutes, update Juno's banana limit from nine to eight. Call `GET /wrapped/juno` and note the result as *W1*.
 
+Of course it would be easier to debug if we had direct access to the caching infrastructure, but unfortunately that wasn't the case.
+
 The `Banana` and `Wrapper` caches are 'good' if their invalidation is working correctly, and 'bad' if not. Good caches will invalidate when Juno's banana limit changes. Bad caches will hold onto their value for five minutes after an initial call, no matter how Juno's banana limit changes. The table below summarizes all possible states of the two caches, and how the results would look.
 
 <table>
